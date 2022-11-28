@@ -1,0 +1,566 @@
+---
+title: "Hands-on Exercise 1: Geo Data Wrangling with R (Chapter 1-2)"
+editor: visual
+---
+
+## Overview
+
+In this hands-on exercise, I learn how to import and wrangling geospatial data using appropriate R packages.
+
+## Getting Started
+
+The code chunk below install and load [sf](https://r-spatial.github.io/sf/) and tidyverse packages into R environment.
+
+```{r}
+pacman::p_load(sf, tidyverse)
+
+```
+
+## Importing Geo Data
+
+### Importing polygon feature data
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
+```
+
+### Importing polyline feature data in shapefile form
+
+```{r}
+cyclingpath = st_read(dsn = "data/geospatial", layer = "CyclingPath")
+```
+
+### Importing GIS data in kml format
+
+```{r}
+preschool = st_read("data/geospatial/pre-schools-location-kml.kml")
+```
+
+## Checking the Content of A Simple Feature Data Frame
+
+### Working with *st_geometry()*
+
+```{r}
+st_geometry(mpsz)
+```
+
+### Working with glimpse()
+
+```{r}
+library(dplyr)
+glimpse(mpsz)
+```
+
+### Working with *head()*
+
+```{r}
+head(mpsz, n=5)  
+```
+
+## Plotting the Geospatial Data
+
+```{r}
+plot(mpsz)
+```
+
+```{r}
+plot(st_geometry(mpsz))
+```
+
+```{r}
+plot(mpsz["PLN_AREA_N"])
+```
+
+## Working with Projection
+
+### Assigning EPSG code to a simple feature data frame
+
+```{r}
+st_crs(mpsz)
+```
+
+```{r}
+mpsz3414 <- st_set_crs(mpsz, 3414)
+```
+
+```{r}
+st_crs(mpsz3414)
+```
+
+### Transforming the projection of preschool from wgs84 to svy21.
+
+```{r}
+preschool3414 <- st_transform(preschool, crs = 3414)
+```
+
+## Importing and Converting An Aspatial Data
+
+### Importing the aspatial data
+
+```{r}
+library(readr)
+listings <- read_csv("data/aspatial/listings.csv")
+```
+
+```{r}
+list(listings) 
+```
+
+### Creating a simple feature data frame from an aspatial data frame
+
+```{r}
+listings_sf <- st_as_sf(listings, 
+                       coords = c("longitude", "latitude"),
+                       crs=4326) %>%
+  st_transform(crs = 3414)
+```
+
+```{r}
+glimpse(listings_sf)
+```
+
+## Geoprocessing with sf package
+
+### Buffering
+
+```{r}
+buffer_cycling <- st_buffer(cyclingpath, 
+                               dist=5, nQuadSegs = 30)
+```
+
+```{r}
+buffer_cycling$AREA <- st_area(buffer_cycling)
+```
+
+```{r}
+sum(buffer_cycling$AREA)
+```
+
+### Point-in-polygon count
+
+```{r}
+mpsz3414$`PreSch Count`<- lengths(st_intersects(mpsz3414, preschool3414))
+```
+
+```{r}
+summary(mpsz3414$`PreSch Count`)
+```
+
+```{r}
+top_n(mpsz3414, 1, `PreSch Count`)
+```
+
+```{r}
+mpsz3414$Area <- mpsz3414 %>%
+  st_area()
+```
+
+```{r}
+mpsz3414 <- mpsz3414 %>%
+  mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)
+```
+
+## Explorotary Data Analysis (EDA)
+
+```{r}
+hist(mpsz3414$`PreSch Density`)
+```
+
+```{r}
+library(ggplot2)
+ggplot(data=mpsz3414, 
+       aes(x= as.numeric(`PreSch Density`)))+
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="light blue") +
+  labs(title = "Are pre-school even distributed in Singapore?",
+       subtitle= "There are many planning sub-zones with a single pre-school, on the other hand, \nthere are two planning sub-zones with at least 20 pre-schools",
+      x = "Pre-school density (per km sq)",
+      y = "Frequency")
+```
+
+```{r}
+ggplot(data=mpsz3414,
+
+aes(x= as.numeric(`PreSch Density`), y= as.numeric(`PreSch Count`)))+
+
+geom_point() +
+
+labs(title = "Are pre-school even distributed in Singapore?",
+
+subtitle= "There are many planning sub-zones with a single pre-school, on the other hand, \nthere are two planning sub-zones with at least 20 pre-schools",
+
+x = "Pre-school density (per km sq)",
+
+y = "Pre-school Count")
+```
+
+# Choropleth Mapping with R
+
+## Overview
+
+In this chapter, I will learn how to plot functional and truthful choropleth maps by using an R package called \*\*tmap\*\* package.
+
+### Survival Tip
+
+It is advisable for you to read the functional description of each function before using them.
+
+## Getting Started
+
+In this hands-on exercise, the key R package use is [**tmap**](https://cran.r-project.org/web/packages/tmap/) package in R. Beside **tmap** package, four other R packages will be used. They are:
+
+-   [**readr**](https://readr.tidyverse.org/) for importing delimited text file,
+
+-   [**tidyr**](https://tidyr.tidyverse.org/) for tidying data,
+
+-   [**dplyr**](https://dplyr.tidyverse.org/) for wrangling data and
+
+-   [**sf**](https://cran.r-project.org/web/packages/sf/) for handling geospatial data.
+
+The code chunk below will be used to install and load these packages in RStudio.
+
+```{r}
+pacman::p_load(sf, tmap, tidyverse)
+```
+
+## Importing Data into R
+
+### The Data
+
+### Importing Geospatial Data into R
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial", 
+                layer = "MP14_SUBZONE_WEB_PL")
+```
+
+```{r}
+mpsz
+```
+
+### Importing Attribute Data into R
+
+```{r}
+popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv")
+```
+
+### Data Preparation
+
+#### Data wrangling
+
+```{r}
+popdata2020 <- popdata %>%
+  filter(Time == 2020) %>%
+  group_by(PA, SZ, AG) %>%
+  summarise(`POP` = sum(`Pop`)) %>%
+  ungroup()%>%
+  pivot_wider(names_from=AG, 
+              values_from=POP) %>%
+  mutate(YOUNG = rowSums(.[3:6])
+         +rowSums(.[12])) %>%
+mutate(`ECONOMY ACTIVE` = rowSums(.[7:11])+
+rowSums(.[13:15]))%>%
+mutate(`AGED`=rowSums(.[16:21])) %>%
+mutate(`TOTAL`=rowSums(.[3:21])) %>%  
+mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)
+/`ECONOMY ACTIVE`) %>%
+  select(`PA`, `SZ`, `YOUNG`, 
+       `ECONOMY ACTIVE`, `AGED`, 
+       `TOTAL`, `DEPENDENCY`)
+```
+
+#### Joining the attribute data and geospatial data
+
+```{r}
+popdata2020 <- popdata2020 %>%
+  mutate_at(.vars = vars(PA, SZ), 
+          .funs = funs(toupper)) %>%
+  filter(`ECONOMY ACTIVE` > 0)
+```
+
+```{r}
+mpsz_pop2020 <- left_join(mpsz, popdata2020,
+                          by = c("SUBZONE_N" = "SZ"))
+```
+
+```{r}
+write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
+```
+
+## Choropleth Mapping Geospatial Data Using *tmap*
+
+### Plotting a choropleth map quickly by using *qtm()*
+
+```{r}
+tmap_mode("plot")
+qtm(mpsz_pop2020, 
+    fill = "DEPENDENCY")
+```
+
+### Creating a choropleth map by using *tmap*'s elements
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues",
+          title = "Dependency ratio") +
+  tm_layout(main.title = "Distribution of Dependency Ratio by planning subzone",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar() +
+  tm_grid(alpha =0.2) +
+  tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
+             position = c("left", "bottom"))
+```
+
+#### Drawing a base map
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_polygons()
+```
+
+#### Drawing a choropleth map using *tm_polygons()*
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY")
+```
+
+#### Drawing a choropleth map using *tm_fill()* and \*tm_border()\*\*
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY")
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY") +
+  tm_borders(lwd = 0.1,  alpha = 1)
+```
+
+### Data classification methods of **tmap**
+
+#### Plotting choropleth maps with built-in classification methods
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "jenks") +
+  tm_borders(alpha = 0.5)
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "equal") +
+  tm_borders(alpha = 0.5)
+```
+
+#### Plotting choropleth map with custome break
+
+```{r}
+summary(mpsz_pop2020$DEPENDENCY)
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY",
+          breaks = c(0, 0.60, 0.70, 0.80, 0.90, 1.00)) +
+  tm_borders(alpha = 0.5)
+```
+
+### Colour Scheme
+
+#### Using ColourBrewer palette
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY",
+          n = 6,
+          style = "quantile",
+          palette = "Blues") +
+  tm_borders(alpha = 0.5)
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY",
+          style = "quantile",
+          palette = "-Greens") +
+  tm_borders(alpha = 0.5)
+```
+
+### Map Layouts
+
+#### Map Legend
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "jenks", 
+          palette = "Blues", 
+          legend.hist = TRUE, 
+          legend.is.portrait = TRUE,
+          legend.hist.z = 0.1) +
+  tm_layout(main.title = "Distribution of Dependency Ratio by planning subzone \n(Jenks classification)",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            legend.outside = FALSE,
+            legend.position = c("right", "bottom"),
+            frame = FALSE) +
+  tm_borders(alpha = 0.5)
+```
+
+#### Map style
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "-Greens") +
+  tm_borders(alpha = 0.5) +
+  tmap_style("classic")
+```
+
+#### Cartographic Furniture
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues",
+          title = "No. of persons") +
+  tm_layout(main.title = "Distribution of Dependency Ratio \nby planning subzone",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.2) +
+  tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
+             position = c("left", "bottom"))
+```
+
+```{r}
+tmap_style("white")
+```
+
+### Drawing Small Multiple Choropleth Maps
+
+#### By assigning multiple values to at least one of the aesthetic arguments
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill(c("YOUNG", "AGED"),
+          style = "equal", 
+          palette = "Blues") +
+  tm_layout(legend.position = c("right", "bottom")) +
+  tm_borders(alpha = 0.5) +
+  tmap_style("white")
+```
+
+```{r}
+tm_shape(mpsz_pop2020)+ 
+  tm_polygons(c("DEPENDENCY","AGED"),
+          style = c("equal", "quantile"), 
+          palette = list("Blues","Greens")) +
+  tm_layout(legend.position = c("right", "bottom"))
+```
+
+#### By defining a group-by variable in *tm_facets()*
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          style = "quantile",
+          palette = "Blues",
+          thres.poly = 0) + 
+  tm_facets(by="REGION_N", 
+            free.coords=TRUE, 
+            drop.shapes=TRUE) +
+  tm_layout(legend.show = FALSE,
+            title.position = c("center", "center"), 
+            title.size = 20) +
+  tm_borders(alpha = 0.5)
+```
+
+#### By creating multiple stand-alone maps with *tmap_arrange()*
+
+```{r}
+youngmap <- tm_shape(mpsz_pop2020)+ 
+  tm_polygons("YOUNG", 
+              style = "quantile", 
+              palette = "Blues")
+
+agedmap <- tm_shape(mpsz_pop2020)+ 
+  tm_polygons("AGED", 
+              style = "quantile", 
+              palette = "Blues")
+
+tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
+```
+
+### Mappping Spatial Object Meeting a Selection Criterion
+
+```{r}
+tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N=="CENTRAL REGION", ])+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues", 
+          legend.hist = TRUE, 
+          legend.is.portrait = TRUE,
+          legend.hist.z = 0.1) +
+  tm_layout(legend.outside = TRUE,
+            legend.height = 0.45, 
+            legend.width = 5.0,
+            legend.position = c("right", "bottom"),
+            frame = FALSE) +
+  tm_borders(alpha = 0.5)
+```
+
+## Reference
+
+### All about **tmap** package
+
+-   [tmap: Thematic Maps in R](https://www.jstatsoft.org/article/view/v084i06)
+
+-   [tmap](https://cran.r-project.org/web/packages/tmap/)
+
+-   [tmap: get started!](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html)
+
+-   [tmap: changes in version 2.0](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-changes-v2.html)
+
+-   [tmap: creating thematic maps in a flexible way (useR!2015)](http://von-tijn.nl/tijn/research/presentations/tmap_user2015.pdf)
+
+-   [Exploring and presenting maps with tmap (useR!2017)](http://von-tijn.nl/tijn/research/presentations/tmap_user2017.pdf)
+
+### Geospatial data wrangling
+
+-   [sf: Simple Features for R](https://cran.r-project.org/web/packages/sf/)
+
+-   [Simple Features for R: StandardizedSupport for Spatial Vector Data](https://journal.r-project.org/archive/2018/RJ-2018-009/RJ-2018-009.pdf)
+
+-   [Reading, Writing and Converting Simple Features](https://cran.r-project.org/web/packages/sf/vignettes/sf2.html)
+
+### Data wrangling
+
+-   [dplyr](https://dplyr.tidyverse.org/)
+
+-   [Tidy data](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
+
+-   [tidyr: Easily Tidy Data with 'spread()' and 'gather()' Functions](https://cran.r-project.org/web/packages/tidyr/tidyr.pdf)
