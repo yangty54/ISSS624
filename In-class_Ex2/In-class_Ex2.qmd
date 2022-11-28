@@ -1,0 +1,141 @@
+---
+title: "In-class Exercise 2: Practice For the Take-Home Exercise 1"
+author: Yang Tianyi
+execute: 
+  warning: false
+  message: false
+format: html
+editor: visual
+---
+
+# Practice code for Take-home Exercise 1
+
+```{r}
+pacman::p_load(sf, tidyverse, tmap, spdep, funModeling)
+```
+
+# Data Preparation process
+
+```{r}
+#| eval: false
+wp <- st_read(dsn = "data", 
+                 layer = "geo_export",
+                  crs = 4326) %>%
+  filter(clean_coun == "Nigeria")
+```
+
+```{r}
+#| eval: false
+wp_nga <- write_rds(wp, "data/wp_nga.rds")
+```
+
+```{r}
+#| eval: false
+write_rds(wp, "data/wp_nga.rds")
+```
+
+```{r}
+#| eval: false
+nga <- st_read(dsn = "data",
+               layer = "nga_admbnda_adm2_osgof_20190417",
+               crs = 4326)
+```
+
+```{r}
+#| eval: false
+wp_nga <- read_rds("data/wp_nga.rds") %>%
+  mutate(status_cle = replace_na(status_cle, "Unknown"))
+```
+
+```{r}
+#| eval: false
+wp_nga <- read_rds("data/wp_nga.rds") %>%
+  mutate(status_cle = 
+replace_na(status_cle, "Unknown"))
+```
+
+## Data Wrangling Process
+
+In the code chunk below, filtering process on specific variables of the data is done, 'filter()' of dplyr is used to select functional points.
+
+```{r}
+#| eval: false
+freq(data=wp_nga, 
+     input = 'status_cle')
+```
+
+```{r}
+#| eval: false
+wpt_functional <- wp_nga %>%
+  filter(status_cle %in%
+           c("Functional", 
+             "Functional but not in use",
+             "Functional but needs repair"))
+```
+
+```{r}
+#| eval: false
+freq(data=wpt_functional, 
+     input = 'status_cle')
+```
+
+```{r}
+#| eval: false
+wpt_nonfunctional <- wp_nga %>%
+  filter(status_cle %in%
+           c("Abandoned/Decommissioned",
+             "Abandoned",
+             "Non-Functional",
+             "Non functional due to dry season",
+             "Non functional due to dry season"))
+```
+
+```{r}
+#| eval: false
+freq(data=wpt_nonfunctional,
+     input = 'status_cle')
+```
+
+```{r}
+#| eval: false
+wpt_unknown <- wp_nga %>%
+  filter(status_cle == "Unknown")
+```
+
+```{r}
+#| eval: false
+nga_wp <- nga %>% 
+  mutate(`total wpt` = lengths(
+    st_intersects(nga, wp_nga))) %>%
+  mutate(`wpt functional` = lengths(
+    st_intersects(nga, wpt_functional))) %>%
+  mutate(`wpt non-functional` = lengths(
+    st_intersects(nga, wpt_nonfunctional))) %>%
+  mutate(`wpt unknown` = lengths(
+    st_intersects(nga, wpt_unknown)))
+```
+
+```{r}
+#| eval: false
+nga_wp <- nga_wp %>%
+  mutate(pct_functional = `wpt functional`/`total wpt`) %>%
+  mutate(`pct_non-functional` = `wpt non-functional`/`total wpt`) %>%
+  select(3:4, 9:10, 18:23)
+```
+
+```{r}
+#| eval: false
+write_rds(nga_wp, "data/nga_wp.rds")
+```
+
+```{r}
+#| fig-width: 14
+#| fig-height: 12
+nga_wp <- read_rds("data/nga_wp.rds")
+total <- qtm(nga_wp, "total wpt")
+wp_functional <- qtm(nga_wp, "wpt functional")
+wp_nonfunctional <- qtm(nga_wp, "wpt non-functional")
+unknown <- qtm(nga_wp, "wpt unknown")
+
+tmap_arrange(total, wp_functional, wp_nonfunctional, unknown, asp=1, ncol=2)
+```

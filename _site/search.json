@@ -229,5 +229,19 @@
     "title": "In-class Exercise 1: Spatial Weights and Applications (Chapter 3)",
     "section": "References",
     "text": "References\n\nCreating Neighbours using sf objects"
+  },
+  {
+    "objectID": "In-class_Ex2/In-class_Ex2.html",
+    "href": "In-class_Ex2/In-class_Ex2.html",
+    "title": "In-class Exercise 2: Practice For the Take-Home Exercise 1",
+    "section": "",
+    "text": "pacman::p_load(sf, tidyverse, tmap, spdep, funModeling)"
+  },
+  {
+    "objectID": "In-class_Ex2/In-class_Ex2.html#data-wrangling-process",
+    "href": "In-class_Ex2/In-class_Ex2.html#data-wrangling-process",
+    "title": "In-class Exercise 2: Practice For the Take-Home Exercise 1",
+    "section": "Data Wrangling Process",
+    "text": "Data Wrangling Process\nIn the code chunk below, filtering process on specific variables of the data is done, ‘filter()’ of dplyr is used to select functional points.\n\nfreq(data=wp_nga, \n     input = 'status_cle')\n\n\nwpt_functional <- wp_nga %>%\n  filter(status_cle %in%\n           c(\"Functional\", \n             \"Functional but not in use\",\n             \"Functional but needs repair\"))\n\n\nfreq(data=wpt_functional, \n     input = 'status_cle')\n\n\nwpt_nonfunctional <- wp_nga %>%\n  filter(status_cle %in%\n           c(\"Abandoned/Decommissioned\",\n             \"Abandoned\",\n             \"Non-Functional\",\n             \"Non functional due to dry season\",\n             \"Non functional due to dry season\"))\n\n\nfreq(data=wpt_nonfunctional,\n     input = 'status_cle')\n\n\nwpt_unknown <- wp_nga %>%\n  filter(status_cle == \"Unknown\")\n\n\nnga_wp <- nga %>% \n  mutate(`total wpt` = lengths(\n    st_intersects(nga, wp_nga))) %>%\n  mutate(`wpt functional` = lengths(\n    st_intersects(nga, wpt_functional))) %>%\n  mutate(`wpt non-functional` = lengths(\n    st_intersects(nga, wpt_nonfunctional))) %>%\n  mutate(`wpt unknown` = lengths(\n    st_intersects(nga, wpt_unknown)))\n\n\nnga_wp <- nga_wp %>%\n  mutate(pct_functional = `wpt functional`/`total wpt`) %>%\n  mutate(`pct_non-functional` = `wpt non-functional`/`total wpt`) %>%\n  select(3:4, 9:10, 18:23)\n\n\nwrite_rds(nga_wp, \"data/nga_wp.rds\")\n\n\nnga_wp <- read_rds(\"data/nga_wp.rds\")\ntotal <- qtm(nga_wp, \"total wpt\")\nwp_functional <- qtm(nga_wp, \"wpt functional\")\nwp_nonfunctional <- qtm(nga_wp, \"wpt non-functional\")\nunknown <- qtm(nga_wp, \"wpt unknown\")\n\ntmap_arrange(total, wp_functional, wp_nonfunctional, unknown, asp=1, ncol=2)"
   }
 ]
