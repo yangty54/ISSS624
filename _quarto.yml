@@ -4,14 +4,32 @@ project:
 website:
   title: "ISSS624"
   navbar:
-    left:
+    left: 
+      - text: Hands-on Exercises
+        menu: 
+          - text: Hands-on Exercise 1 (Chapter 1-2)
+            href: Hands-on_Ex1/Hands-on_Ex1.qmd
+          - text: Hands-on Exercise 2 (Chapter 4)
+            href: Hands-on_Ex2/Hands-on_Ex2.qmd
+            
+      - text: In-class Exercises
+        menu: 
+          - text: In-class Exercise 1 (Chapter 3)
+            href: In-class_Ex1/In-class_Ex1.qmd
+          - text: In-class Exercise 2
+            href: In-class_Ex2/In-class_Ex2.qmd
+      - text: Take-home Exercises
+        menu: 
+          - text: Take-Home Exercise 1
+            
+    right:
       - href: index.qmd
         text: Home
       - about.qmd
 
 format:
   html:
-    theme: cosmo
+    theme: cyborg
     css: styles.css
     toc: true
 
