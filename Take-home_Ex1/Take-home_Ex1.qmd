@@ -1,0 +1,128 @@
+---
+title: "Take-home Ex1: Is there Positive Co-occurance Relationship Between Water Point Location on Nigeria?"
+editor: visual
+author: Yang Tianyi
+execute: 
+  warning: false
+  message: false
+format: html
+---
+
+# Overview
+
+In this lesson, a collection of geospatial statistical methods specially designed for measuring functional and non-functional water points will be used in global and local perspective.
+
+These spatial statistics are well suited for:
+
+-   detecting clusters or outliers;
+
+-   identifying hot spot or cold spot areas;
+
+-   assessing the assumptions of stationarity; and
+
+-   identifying distances beyond which no discernible association obtains.
+
+For this study, the data of Country of Nigeria will be used for further investigation.
+
+# Getting Started
+
+In the code chunk below, `p_load()` of *pacman* package is used to install and load the following R packages into R environment:
+
+-   sf,
+
+-   tidyverse,
+
+-   tmap,
+
+-   spdep, and
+
+-   funModeling will be used for rapid Exploratory Data Analysis
+
+```{r}
+pacman::p_load(sf, tidyverse, tmap, spdep, funModeling)
+```
+
+# Importing Geospatial Data from Filtered Data
+
+In the previous in-class Exercise 2 data, two geospatial data sets were being used, they are:
+
+-   geo_export
+
+-   nga_admbnda_adm2_osgof_20190417
+
+Specific water point geospatial data was first imported and filtered in the In-class exercise 2 section.
+
+Next, `write_rds()` of readr package was used to save the extracted sf data table (i.e. wp) into an output file in rds data format. The output file is called *nga_wp.rds* and it is saved in *data* sub-folder.
+
+With `filter()` of dplyr is used to select functional and non-functional water point data, `select()` of **dplyr** is used to retain a small size file with only field 3,4,9,10, 18,19,20,21,22,and 23.
+
+After these complete clearing part, the raw data was deleted away to prevent large file storage issue. The following part of data wrangling imports the filtered data into the environment.
+
+## Reading and Visualizing the Spatial Dsitribution of Water Points
+
+First, we are going to import the water point geospatial data (i.e. nga_wp) by using the code chunk below.
+
+```{r}
+nga_wp <- read_rds("data/nga_wp.rds")
+```
+
+# Data Wrangling
+
+## Working with Projection
+
+Map projection is an important property of a geospatial data. In order to perform geoprocessing using two geospatial data, we need to ensure that both geospatial data are projected using similar coordinate system. The technical term of this process is called **projection transformation**.
+
+### Assigning EPSG code to a simple feature data frame
+
+One of the common issue that can happen during importing geospatial data into R is that the coordinate system of the source data was either missing (such as due to missing .proj for ESRI shapefile) or wrongly assigned during the importing process.
+
+The water point data of `nga_wp` will be run through *st_crs()* of *sf* package as shown in the code chunk below.
+
+```{r}
+st_crs(nga_wp)
+```
+
+This code indicates that the EPSG is 4326. This is a wrong EPSG code because the correct EPSG code for the task should be a choice between 26391, 26392, and 26303. Therefore, transformation of EPSG is needed, *st_set_crs()* of **sf** package is used as shown in the code chunk below.
+
+```{r}
+NIGERIA <- st_transform(nga_wp, 26391)
+```
+
+Now, let us check the CSR again by using the code chunk below.
+
+```{r}
+st_crs(NIGERIA)
+```
+
+Notice that the EPSG code is 26391 now.
+
+```{r}
+total <- qtm(NIGERIA, "total wpt")
+wp_functional <- qtm(NIGERIA, "wpt functional")
+wp_nonfunctional <- qtm(NIGERIA, "wpt non-functional")
+unknown <- qtm(NIGERIA, "wpt unknown")
+```
+
+The summary of the filtered data is shown below:
+
+```{r}
+summary(NIGERIA)
+```
+
+Visualized distribution of the numerical functional and non-functional data is presented in the following code chunk:
+
+```{r}
+#| fig-width: 14
+#| fig-height: 12
+tmap_arrange(total, unknown, wp_functional, wp_nonfunctional, asp=1, ncol=2)
+```
+
+Next, maps to show the spatial distribution of functional and non-functional water point rate at LGA level by using appropriate thematic mapping technique provided by tmap package is needed, the following code chunk will display the percentage functional and non-functional water point data in a plot.
+
+```{r}
+pct_functional <- qtm(NIGERIA, "pct_functional")
+pct_nonfunctional <- qtm(NIGERIA, "pct_non-functional")
+tmap_arrange(pct_functional, pct_nonfunctional, ncol=2)
+```
+
+\
