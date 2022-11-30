@@ -240,7 +240,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#computing-local-morans-i" id="toc-computing-local-morans-i" class="nav-link" data-scroll-target="#computing-local-morans-i">Computing Local Moran’s I</a></li>
   <li><a href="#mapping-the-local-morans-i" id="toc-mapping-the-local-morans-i" class="nav-link" data-scroll-target="#mapping-the-local-morans-i"><strong>Mapping the local Moran’s I</strong></a></li>
-  <li><a href="#mapping-local-morans-i-values" id="toc-mapping-local-morans-i-values" class="nav-link" data-scroll-target="#mapping-local-morans-i-values"><strong>Mapping local Moran’s I values</strong></a></li>
+  <li><a href="#mapping-local-morans-i-values" id="toc-mapping-local-morans-i-values" class="nav-link" data-scroll-target="#mapping-local-morans-i-values"><strong>Mapping Local Moran’s I values</strong></a></li>
   </ul></li>
   <li><a href="#creating-a-lisa-cluster-map" id="toc-creating-a-lisa-cluster-map" class="nav-link" data-scroll-target="#creating-a-lisa-cluster-map">Creating a LISA Cluster Map</a>
   <ul class="collapse">
@@ -249,14 +249,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </ul></li>
   <li><a href="#hot-spot-and-cold-spot-area-analysis" id="toc-hot-spot-and-cold-spot-area-analysis" class="nav-link" data-scroll-target="#hot-spot-and-cold-spot-area-analysis">Hot Spot and Cold Spot Area Analysis</a>
   <ul class="collapse">
-  <li><a href="#getis-and-ords-g-statistics" id="toc-getis-and-ords-g-statistics" class="nav-link" data-scroll-target="#getis-and-ords-g-statistics">Getis and Ord's G-Statistics</a></li>
+  <li><a href="#getis-and-ords-g-statistics" id="toc-getis-and-ords-g-statistics" class="nav-link" data-scroll-target="#getis-and-ords-g-statistics">Getis and Ord’s G-Statistics</a></li>
   </ul></li>
   <li><a href="#computing-gi-statistics" id="toc-computing-gi-statistics" class="nav-link" data-scroll-target="#computing-gi-statistics">Computing Gi statistics</a>
   <ul class="collapse">
   <li><a href="#gi-statistics-using-fixed-distance" id="toc-gi-statistics-using-fixed-distance" class="nav-link" data-scroll-target="#gi-statistics-using-fixed-distance">Gi statistics using fixed distance</a></li>
   <li><a href="#mapping-gi-values" id="toc-mapping-gi-values" class="nav-link" data-scroll-target="#mapping-gi-values">Mapping Gi values</a></li>
   </ul></li>
+  <li><a href="#analysis-of-lm-and-gi-map-result" id="toc-analysis-of-lm-and-gi-map-result" class="nav-link" data-scroll-target="#analysis-of-lm-and-gi-map-result">Analysis of LM and Gi map result</a></li>
   </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -835,6 +837,7 @@ statistic = 0.53091, observed rank = 1000, p-value = 0.001
 alternative hypothesis: greater</code></pre>
 </div>
 </div>
+<p>With both p-value less than 1%, indicating a statistically significance to the alternative hypothesis that the attribute is certainly not randomly distributed and a positive Moran I value indicate more spatially clustered than would be expected if underlying spatial processes were random.</p>
 </section>
 <section id="visualizing-monte-carlo-morans-i" class="level4">
 <h4 class="anchored" data-anchor-id="visualizing-monte-carlo-morans-i">Visualizing Monte Carlo Moran’s I</h4>
@@ -860,7 +863,7 @@ alternative hypothesis: greater</code></pre>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">freq=</span><span class="cn">TRUE</span>, </span>
 <span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks=</span><span class="dv">20</span>, </span>
 <span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Simulated Moran's I with Fixed Distance"</span>)</span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="dv">0</span>, </span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fl">0.4904</span>, </span>
 <span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="st">"red"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Take-home_Ex1_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
@@ -887,12 +890,13 @@ alternative hypothesis: greater</code></pre>
 <span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">freq=</span><span class="cn">TRUE</span>, </span>
 <span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks=</span><span class="dv">20</span>, </span>
 <span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Simulated Moran's I with Adaptive Distance"</span>)</span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="dv">0</span>, </span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fl">0.53091</span>, </span>
 <span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">col=</span><span class="st">"red"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Take-home_Ex1_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>Based on the above plot and result of the Monte Carlo Moran’s I test, we can conclude that the results are statistically significant with P-value less than 0.01. With the result of Moran’s I test falls to the extreme right on the histogram indicating a cluster for both matrix method.</p>
 </section>
 </section>
 <section id="compute-morans-i-correlogram" class="level3">
@@ -910,6 +914,8 @@ alternative hypothesis: greater</code></pre>
 <p><img src="Take-home_Ex1_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>The correlogram is a commonly used tool for checking <a href="https://en.wikipedia.org/wiki/Randomness" title="Randomness">randomness</a> in a <a href="https://en.wikipedia.org/wiki/Data_set" title="Data set">data set</a>. If random, autocorrelations should be near zero for any and all time-lag separations. If non-random, then one or more of the autocorrelations will be significantly non-zero.</p>
+<p>The above correlogram graph indicates a big difference across all 6-lag, indicating a non-random correlation across the results.</p>
 </section>
 </section>
 <section id="cluster-and-outlier-analysis" class="level2">
@@ -980,16 +986,17 @@ alternative hypothesis: greater</code></pre>
 </div>
 </section>
 <section id="mapping-local-morans-i-values" class="level3">
-<h3 class="anchored" data-anchor-id="mapping-local-morans-i-values"><strong>Mapping local Moran’s I values</strong></h3>
+<h3 class="anchored" data-anchor-id="mapping-local-morans-i-values"><strong>Mapping Local Moran’s I values</strong></h3>
 <p>Using choropleth mapping functions of tmap package, we can plot the local Moran’s I values by using the code chinks below.</p>
 <p>Firstly, it is the local Moran Statistics on Fixed Distance with wpt functional</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(nigeria_localMI_fix) <span class="sc">+</span></span>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>fix_LM_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(nigeria_localMI_fix) <span class="sc">+</span></span>
 <span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Ii"</span>, </span>
 <span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>,</span>
-<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"RdBu"</span>,</span>
-<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Local Moran Statistics"</span>) <span class="sc">+</span></span>
-<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"-RdBu"</span>,</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"LM with Fixed Distance"</span>) <span class="sc">+</span></span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>fix_LM_map</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1001,12 +1008,13 @@ alternative hypothesis: greater</code></pre>
 </div>
 <p>Then, it is the local Moran Statistics on Adaptive Distance with wpt functional</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(nigeria_localMI_ada) <span class="sc">+</span></span>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>ada_LM_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(nigeria_localMI_ada) <span class="sc">+</span></span>
 <span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Ii"</span>, </span>
 <span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>,</span>
-<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"RdBu"</span>,</span>
-<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Local Moran Statistics"</span>) <span class="sc">+</span></span>
-<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"-RdBu"</span>,</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"LM with Adaptive Distance"</span>) <span class="sc">+</span></span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>ada_LM_map</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -1055,7 +1063,7 @@ alternative hypothesis: greater</code></pre>
 <section id="preparing-lisa-map-classes" class="level3">
 <h3 class="anchored" data-anchor-id="preparing-lisa-map-classes">Preparing LISA map classes</h3>
 <p>For this section, LISA map categorization and visualization is performed.</p>
-<p>We first derives the spatially lagged variable of interest and centers the spatially lagged variable around its mean, then follow by centering the local Moran's around the mean, with a statistical significance level for the local Moran is set, and lastly define the low-low (1), low-high (2), high-low (3) and high-high (4) categories with non-significant Moran placed in the category 0.</p>
+<p>We first derives the spatially lagged variable of interest and centers the spatially lagged variable around its mean, then follow by centering the local Moran’s around the mean, with a statistical significance level for the local Moran is set, and lastly define the low-low (1), low-high (2), high-low (3) and high-high (4) categories with non-significant Moran placed in the category 0.</p>
 <p>We start with fixed distance method and functional water point data.</p>
 <p>The code chunks below show the steps to prepare a LISA cluster map.</p>
 <div class="cell">
@@ -1162,15 +1170,17 @@ alternative hypothesis: greater</code></pre>
 </div>
 </div>
 </div>
+<p>An <strong>outlier</strong>: significant and negative if location i is associated with relatively low values in surrounding locations. A <strong>cluster</strong>: significant and positive if location i is associated with relatively high values of the surrounding locations.</p>
+<p>From the above cluster analysis, we can observe extreme high-high cluster in the northern region, and extreme low-low cluster in the northeast area, with other small outliers scattering across the nation, showing a very uneven distribution of water resource in the poor country.</p>
 </section>
 </section>
 <section id="hot-spot-and-cold-spot-area-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="hot-spot-and-cold-spot-area-analysis">Hot Spot and Cold Spot Area Analysis</h2>
 <p>Beside detecting cluster and outliers, localized spatial statistics can be also used to detect hot spot and/or cold spot areas.</p>
-<p>The term 'hot spot' has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).</p>
+<p>The term ‘hot spot’ has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).</p>
 <section id="getis-and-ords-g-statistics" class="level3">
-<h3 class="anchored" data-anchor-id="getis-and-ords-g-statistics">Getis and Ord's G-Statistics</h3>
-<p>An alternative spatial statistics to detect spatial anomalies is the Getis and Ord's G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.</p>
+<h3 class="anchored" data-anchor-id="getis-and-ords-g-statistics">Getis and Ord’s G-Statistics</h3>
+<p>An alternative spatial statistics to detect spatial anomalies is the Getis and Ord’s G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.</p>
 <p>The analysis consists of three steps:</p>
 <ul>
 <li><p>Deriving spatial weight matrix</p></li>
@@ -1213,41 +1223,78 @@ alternative hypothesis: greater</code></pre>
 <h3 class="anchored" data-anchor-id="mapping-gi-values">Mapping Gi values</h3>
 <p>The code chunk below shows the functions used to map the Gi values derived using fixed and adaptive distance weight matrix.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(nigeria_gi_fix) <span class="sc">+</span></span>
-<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"gstat_fixed"</span>, </span>
-<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>,</span>
-<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette=</span><span class="st">"-RdBu"</span>,</span>
-<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local Gi"</span>) <span class="sc">+</span></span>
-<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>fun <span class="ot">&lt;-</span> <span class="fu">qtm</span>(NIGERIA,<span class="st">"wpt functional"</span>)</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>fix_gi_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(nigeria_gi_fix) <span class="sc">+</span></span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"gstat_fixed"</span>, </span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>,</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette=</span><span class="st">"-RdBu"</span>,</span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Local Gi with fixed distance"</span>) <span class="sc">+</span></span>
+<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
+<span id="cb79-8"><a href="#cb79-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(fun, fix_gi_map, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="Take-home_Ex1_files/figure-html/unnamed-chunk-49-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure–Gi Values with fixed distance</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure–Functional water point data and Gi Values with fixed distance</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For the fixed distanced matrix, it has a rather small spectrum compared to the adaptive distanced matrix, which means it will produce a less clear identification on hot and cold areas. For example, areas such as the northeast corner, the minor spots in the middle ares, which was identified in the wpt functional graph is hard to distinguish in the fixed Gi map, which cause difficulty in determine hot and cold spot areas.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>ada_gi_map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(nigeria_gi_ada) <span class="sc">+</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"gstat_ada"</span>, </span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>,</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette=</span><span class="st">"-RdBu"</span>,</span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Local Gi with adaptive distance"</span>) <span class="sc">+</span></span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
+<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(fun, ada_gi_map, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Take-home_Ex1_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure–Functional water point data and Gi Values with adaptive distance</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For the adaptive distance matrix, it spots a clearer distinction on specific cold and hot areas, expecially on the northeast corner, where the fixed distance matrix fail to detect this cold area. Thus, from simply visualization, adaptive matrix produce a better result regarding hot and cold spot areas.</p>
+</section>
+</section>
+<section id="analysis-of-lm-and-gi-map-result" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-of-lm-and-gi-map-result">Analysis of LM and Gi map result</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(fix_LM_map, fix_gi_map, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Take-home_Ex1_files/figure-html/unnamed-chunk-51-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure–Functional water point data with fixed distance matrix graphed in Local Moran and Local Gi statistics</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(nigeria_gi_ada) <span class="sc">+</span></span>
-<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"gstat_ada"</span>, </span>
-<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>,</span>
-<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette=</span><span class="st">"-RdBu"</span>,</span>
-<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local Gi"</span>) <span class="sc">+</span></span>
-<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(ada_LM_map, ada_gi_map, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="Take-home_Ex1_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure–Gi Values with adaptive distance</figcaption><p></p>
+<p><img src="Take-home_Ex1_files/figure-html/unnamed-chunk-52-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure–Functional water point data with adaptive distance matrix graphed in Local Moran and Local Gi statistics</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-
-
+<p>The above code chunks combine both Local Moran and Local Gi’s map.</p>
+<p>The above results show that for both Local Moran and Local Gi’s map, the major hot and cold spots seem to match each other, but the small and surrounding areas appear to be dramatically different. With a totally different scaling spectrum, it might be the major reason why the two have generated such different result.</p>
+<p>Most importantly, all the maps have shown a conspicuous hot area in the north, indicating a flourishing functional water point cluster in the region.</p>
 </section>
 </section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>The importance of spatial autocorrelation is that it helps to define how important spatial characteristic is in affecting a given object in space and if there is a clear relationship of objects with spatial properties. In this exercise scenario, is the distribution of water area resource across the poor nation of Nigeria. The usage of LISA, the Moran’s I and Gi map allows us to put a closer investigation on geopspatial relationship across regions of the country, it not only clusters similar objects with other similar objects but also speaks about the degree of correlation or similarity. It is helpful in finding hidden patterns and relations. It finds a lot of applications in ecology and demographics.</p>
+
+
 </section>
 
 </main> <!-- /main -->
