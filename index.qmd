@@ -1,5 +1,17 @@
 ---
 title: "ISSS624"
+author: 
+  - name: "Yang Tianyi"
+    affiliations:
+      - Singapore Management University
+format: 
+  html: default
+  pdf: default
+editor: visual
+knitr: 
+  opts_chunk: 
+    echo: true
+    message: false
 ---
 
 Welcome to ISSS 624 GAA
