@@ -521,7 +521,7 @@ quadrant_fix[localMI_fix[,5] > signif] <- 0
 ```
 
 ```{r}
-#| fig-cap: Figure--LISA classes with fix distance method in MAP
+#| fig-cap: Figure--LISA classes with fix distance method with functional water point data on Map
 nigeria_localMI_fix$quadrant_fix <- quadrant_fix
 colors <- c("#ffffff", "#2c7bb6", "#abd9e9", "#fdae61", "#d7191c")
 clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
@@ -552,7 +552,7 @@ quadrant_ada[localMI_ada[,5] > signif] <- 0
 ```
 
 ```{r}
-#| fig-cap: Figure--LISA classes with adaptive distance method in MAP
+#| fig-cap: Figure--LISA classes with adaptive distance method with functional water point data on Map
 nigeria_localMI_ada$quadrant_ada <- quadrant_ada
 colors <- c("#ffffff", "#2c7bb6", "#abd9e9", "#fdae61", "#d7191c")
 clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
@@ -583,6 +583,7 @@ quadrant_ada_NF[localMI_ada_nonfun[,5] > signif] <- 0
 ```
 
 ```{r}
+#| fig-cap: Figure--LISA classes with adaptive distance method with non-functional water point data on Map
 nigeria_localMI_ada_nonfun$quadrant_ada_NF <- quadrant_ada_NF
 colors <- c("#ffffff", "#2c7bb6", "#abd9e9", "#fdae61", "#d7191c")
 clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
