@@ -58,7 +58,7 @@ With `filter()` of dplyr is used to select functional and non-functional water p
 
 After these complete clearing part, the raw data was deleted away to prevent large file storage issue. The following part of data wrangling imports the filtered data into the environment.
 
-## Reading and Visualizing the Spatial Dsitribution of Water Points
+## Reading the Spatial Distribution of Water Points
 
 First, we are going to import the water point geospatial data (i.e. nga_wp) by using the code chunk below.
 
@@ -96,33 +96,503 @@ st_crs(NIGERIA)
 
 Notice that the EPSG code is 26391 now.
 
-```{r}
-total <- qtm(NIGERIA, "total wpt")
-wp_functional <- qtm(NIGERIA, "wpt functional")
-wp_nonfunctional <- qtm(NIGERIA, "wpt non-functional")
-unknown <- qtm(NIGERIA, "wpt unknown")
-```
-
 The summary of the filtered data is shown below:
 
 ```{r}
 summary(NIGERIA)
 ```
 
+```{r}
+head(NIGERIA)
+```
+
+## Visualizing the Numerical Spatial Distribution of Water Points
+
 Visualized distribution of the numerical functional and non-functional data is presented in the following code chunk:
 
 ```{r}
 #| fig-width: 14
 #| fig-height: 12
+#| fig-cap: Figure--Numerical Spatial Distribution of Water Points
+total <- qtm(NIGERIA, "total wpt")
+wp_functional <- qtm(NIGERIA, "wpt functional")
+wp_nonfunctional <- qtm(NIGERIA, "wpt non-functional")
+unknown <- qtm(NIGERIA, "wpt unknown")
 tmap_arrange(total, unknown, wp_functional, wp_nonfunctional, asp=1, ncol=2)
 ```
+
+## Visualizing the Percentile Spatial Distribution of Water Points
 
 Next, maps to show the spatial distribution of functional and non-functional water point rate at LGA level by using appropriate thematic mapping technique provided by tmap package is needed, the following code chunk will display the percentage functional and non-functional water point data in a plot.
 
 ```{r}
+#| fig-cap: Figure--Percentaged Spatial Distribution of Water Points in Decimal
 pct_functional <- qtm(NIGERIA, "pct_functional")
 pct_nonfunctional <- qtm(NIGERIA, "pct_non-functional")
 tmap_arrange(pct_functional, pct_nonfunctional, ncol=2)
 ```
 
-\
+# Usage of **Local Indicator of Spatial Association (LISA)**
+
+## What is LISA?
+
+-   A subset of localized geospatial statistics methods.
+
+-   Any spatial statistics that satisfies the following two requirements (Anselin, L. 1995):
+
+    -   the LISA for each observation gives an indication of the extent of significant spatial clustering of similar values around that observation;
+
+    -   the sum of LISAs for all observations is proportional to a global indicator of spatial association.
+
+## **Detecting Spatial Clusters and Outliers**
+
+-   Given a set of geospatial features (i.e. points or polygons) and an analysis field, the spatial statistics identify **spatial clusters** of features with high or low values. The tool also identifies **spatial outliers**.
+
+-   local Moran's I is the most popular spatial statistical method used, other methods include local Geary's c.
+
+-   In general, the analysis will calculate a local statistic value, a z-score, a pseudo p-value, and a code representing the cluster type for each statistically significant feature. The z-scores and pseudo p-values represent the statistical significance of the computed index values.
+
+## **Select an Appropriate Spatial Weighting Method**
+
+-   **Polygon Contiguity**
+
+-   **Fixed Distance**
+
+-   **Inverse Distance**
+
+-   **K-nearest Neighbors**
+
+With the 4 weighting methods mentioned above, only two of them are distance related: **Fixed Distance Method** and **Inverse Distance Method**.
+
+The **fixed distance** method works well for point data. It is often a good option for polygon data when there is a large variation in polygon size, and you want to ensure a consistent scale of analysis.
+
+The **inverse distance** method is most appropriate with continuous data or to model processes where the closer two features are in space, the more likely they are to interact/influence each other.
+
+From the description mentioned above, the **inverse distance method** best fit for this analytical scenario.
+
+Therefore we need to find the centroid of each area, the code chunk below will calculate the geometric center of a spatial object
+
+```{r}
+coords <- st_centroid(st_geometry(NIGERIA))
+```
+
+## Determine the Cut-off Distance for the Matrix
+
+Firstly, we need to determine the upper limit for distance band by using the steps below:
+
+-   Return a matrix with the indices of points belonging to the set of the k nearest neighbours of each other by using [*knearneigh()*](https://r-spatial.github.io/spdep/reference/knearneigh.html) of **spdep**.
+
+-   Convert the knn object returned by *knearneigh()* into a neighbours list of class nb with a list of integer vectors containing neighbour region number ids by using [*knn2nb()*](https://r-spatial.github.io/spdep/reference/knn2nb.html).
+
+-   Return the length of neighbour relationship edges by using [*nbdists()*](https://r-spatial.github.io/spdep/reference/nbdists.html) of **spdep**. The function returns in the units of the coordinates if the coordinates are projected, in km otherwise.
+
+-   Remove the list structure of the returned object by using [**unlist()**](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/unlist).
+
+```{r}
+k1 <- knn2nb(knearneigh(coords))
+k1dists <- unlist(nbdists(k1, coords))
+```
+
+```{r}
+summary(k1dists)
+```
+
+The summary report shows that the maximum neighbor distance is 72139 meter, so a maximum threshold is created, in order to make sure all units have a nearest neighbor under the maximum threshold, this maximum variable is then saved for future calculation.
+
+```{r}
+MAX <- max(unlist(nbdists(k1, coords)))
+```
+
+## Computing Fixed Distance Weight Matrix
+
+For both fixed and inverse distance weighting matrix, both will be computed, plotted, and compared.
+
+Now, we will compute the distance weight matrix by using *dnearneigh()* as shown in the code chunk below.
+
+```{r}
+fix_dis <- dnearneigh(coords, 0 , MAX)
+fix_dis
+```
+
+From the above summary, percentage of nonzero weights runs out to be 3.02, with an average number of links, which in other words, 23 neighbors per region is determined using fixed distance weight method.
+
+### Visualizing Fixed Distance Weighting Method
+
+Now, we will plot the fixed distance weight matrix by using the code chunk below.
+
+```{r}
+#| fig-cap: Figure--Fixed Distance Weight Matrix in Map Form
+plot(NIGERIA$geometry, border="lightgrey")
+plot(fix_dis, coords, add=TRUE)
+plot(k1, coords, add=TRUE, col="red", length=0.01)
+```
+
+The red lines show the links of 1st nearest neighbors and the black lines show the links of neighbors within the cut-off distance of 72km.
+
+Alternatively, we can plot both of them next to each other by using the code chunk below.
+
+```{r}
+#| fig-cap: Figure--1st Nearest Neighbors and Distance Link in Map form
+par(mfrow=c(1,2))
+plot(NIGERIA$geometry, border="lightgrey", main="1st Nearest Neighbours")
+plot(k1, coords, add=TRUE, col="red", length=0.01)
+plot(NIGERIA$geometry, border="lightgrey", main="Distance Link")
+plot(fix_dis, coords, add=TRUE, pch = 10, cex = 0.05)
+```
+
+## Computing Adaptive Distance Weight Matrix
+
+One of the characteristics of fixed distance weight matrix is that more densely settled areas (usually the urban areas) tend to have more neighbors and the less densely settled areas (usually the rural counties) tend to have lesser neighbors. Having many neighbors smoothes the neighbor relationship across more neighbors.
+
+It is possible to control the numbers of neighbors directly using k-nearest neighbors, either accepting asymmetric neighbors or imposing symmetry as shown in the code chunk below.
+
+```{r}
+ada_dis <- knn2nb(knearneigh(coords, k=6))
+ada_dis
+```
+
+### Visualizing Adaptive Distance Weighting Method
+
+We can plot the adaptive distance weight matrix using the code chunk below.
+
+```{r}
+#| fig-cap: Figure--Adaptive Distance Weighting Matrix in Map form
+plot(NIGERIA$geometry, border="lightgrey", main="Adaptive Distance Weighting Method")
+plot(ada_dis, coords, pch = 10, cex = 0.2, add = TRUE, col = "red")
+```
+
+## Computing Inverse Distance Weight Matrix
+
+In this section, **Inverse Distance Weighting Method** is used.
+
+First, it will first use the Queen contiguity weight matrix as a base, when we compute the distances between areas by using [*nbdists()*](https://r-spatial.github.io/spdep/reference/nbdists.html) of **spdep**.
+
+```{r}
+wm_q <- poly2nb(NIGERIA, queen = TRUE)
+dist <- nbdists(wm_q, coords)
+dist[1]
+```
+
+```{r}
+inv_dis <- lapply(dist, function(x) 1/(x/1000))
+inv_dis[1]
+```
+
+### Row-standardized weights matrix
+
+First, we construct the row-standardized weight matrix from the fix distance calculation using the `nb2listw()` function.
+
+```{r}
+rs_fix <- nb2listw(fix_dis, style="W", zero.policy = TRUE)
+summary(rs_fix)
+```
+
+Later, we construct the row-standardized weight matrix from the adaptive distance calculation using the `nb2listw()` function.
+
+```{r}
+rs_ada <- nb2listw(ada_dis, style="B", zero.policy = TRUE)
+summary(rs_ada)
+```
+
+### Global Spatial Autocorrelation: Moran's I
+
+In this section, Moran's I statistics testing is performed by using [*moran.test()*](https://r-spatial.github.io/spdep/reference/moran.test.html) of **spdep**. The code chunk below performs Moran's I statistical testing using [*moran.test()*](https://r-spatial.github.io/spdep/reference/moran.test.html) of **spdep**. First is fix distance weighting method.
+
+```{r}
+moran.test(NIGERIA$pct_functional, 
+           listw=rs_fix, 
+           zero.policy = TRUE, 
+           na.action=na.omit)
+```
+
+Then, adaptive distance weighting method is applied.
+
+```{r}
+moran.test(NIGERIA$pct_functional, 
+           listw=rs_ada, 
+           zero.policy = TRUE, 
+           na.action=na.omit)
+```
+
+#### Computing Monte Carlo Moran's I
+
+The code chunk below performs permutation test for Moran's I statistic by using [*moran.mc()*](https://r-spatial.github.io/spdep/reference/moran.mc.html) of **spdep**. A total of 1000 simulation will be performed. First is fix distance weighting method.
+
+```{r}
+set.seed(1234)
+fd_mc= moran.mc(NIGERIA$pct_functional, 
+                listw=rs_fix, 
+                nsim=999, 
+                zero.policy = TRUE, 
+                na.action=na.omit)
+fd_mc
+```
+
+Then, adaptive distance weighting method is used.
+
+```{r}
+set.seed(1234)
+ad_mc= moran.mc(NIGERIA$pct_functional, 
+                listw=rs_ada, 
+                nsim=999, 
+                zero.policy = TRUE, 
+                na.action=na.omit)
+ad_mc
+```
+
+#### Visualizing Monte Carlo Moran's I
+
+In the code chunk below [*hist()*](https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/hist) and [*abline()*](https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/abline) of R Graphics are used.
+
+At first, Moran's I with fixed distance method is graphed.
+
+```{r}
+mean(fd_mc$res[1:999])
+var(fd_mc$res[1:999])
+summary(fd_mc$res[1:999])
+```
+
+```{r}
+hist(fd_mc$res, 
+     freq=TRUE, 
+     breaks=20, 
+     xlab="Simulated Moran's I with Fixed Distance")
+abline(v=0, 
+       col="red") 
+```
+
+Next, Moran's I with adaptive distance method is generated.
+
+```{r}
+mean(ad_mc$res[1:999])
+var(ad_mc$res[1:999])
+summary(ad_mc$res[1:999])
+```
+
+```{r}
+hist(ad_mc$res, 
+     freq=TRUE, 
+     breaks=20, 
+     xlab="Simulated Moran's I with Adaptive Distance")
+abline(v=0, 
+       col="red") 
+```
+
+### Compute Moran's I correlogram
+
+In the code chunk below, [*sp.correlogram()*](https://r-spatial.github.io/spdep/reference/sp.correlogram.html) of **spdep** package is used to compute a 6-lag spatial correlogram of GDPPC. The global spatial autocorrelation used in Moran's I. The **plot()** of base Graph is then used to plot the output.
+
+```{r}
+MI_corr <- sp.correlogram(wm_q, 
+                          NIGERIA$`wpt functional`, 
+                          order=6,
+                          method="I", 
+                          style="W",
+                          zero.policy = TRUE)
+plot(MI_corr)
+```
+
+## Cluster and Outlier Analysis
+
+Local Indicators of Spatial Association or LISA are statistics that evaluate the existence of clusters in the spatial arrangement of a given variable. In this section, appropriate Local Indicators for Spatial Association (LISA) is used for cluster ad outlier analysis.
+
+### Computing Local Moran's I
+
+To compute local Moran's I, the [*localmoran()*](https://r-spatial.github.io/spdep/reference/localmoran.html) function of **spdep** will be used. It computes *Ii* values, given a set of *zi* values and a listw object providing neighbor weighting information for the polygon associated with the zi values.
+
+For the following code chunk, fix distance method and adaptive distance method will be used to calculate functional water point data, and adaptive distance method will be further used to calculate non-functional water point data on the local Moran's I.
+
+Fixed Distance with wpt functional
+
+```{r}
+fips <- order(NIGERIA$ADM2_EN)
+localMI_fix <- localmoran(NIGERIA$`wpt functional`, rs_fix)
+head(localMI_fix)
+```
+
+Adaptive Distance with wpt functional
+
+```{r}
+localMI_ada <- localmoran(NIGERIA$`wpt functional`, rs_ada)
+head(localMI_ada)
+```
+
+Adaptive Distance with wpt non-functional
+
+```{r}
+localMI_ada_nonfun <- localmoran(NIGERIA$`wpt non-functional`, rs_ada)
+head(localMI_ada_nonfun)
+```
+
+### **Mapping the local Moran's I**
+
+Before mapping the local Moran's I map, it is wise to append the local Moran's I dataframe (i.e. localMI) onto the original NIGERIA SpatialPolygonDataFrame. The code chunks below can be used to perform the task. The out SpatialPolygonDataFrame is called *hunan.localMI*.\
+
+```{r}
+nigeria_localMI_fix <- cbind(NIGERIA,localMI_fix) %>%
+  rename(Pr.Ii = Pr.z....E.Ii..)
+
+nigeria_localMI_ada <- cbind(NIGERIA,localMI_ada) %>%
+  rename(Pr.Ii = Pr.z....E.Ii..)
+
+nigeria_localMI_ada_nonfun <- cbind(nigeria_localMI_ada,
+                                    localMI_ada_nonfun) %>%
+  rename(Pr.Ii.fun = Pr.z....E.Ii..)
+```
+
+### **Mapping local Moran's I values**
+
+Using choropleth mapping functions of tmap package, we can plot the local Moran's I values by using the code chinks below.
+
+Firstly, it is the local Moran Statistics on Fixed Distance with wpt functional
+
+```{r}
+#| fig-cap: Figure--Local Moran Statistics on Fixed Distance with wpt functional in Map form
+tm_shape(nigeria_localMI_fix) +
+  tm_fill(col = "Ii", 
+          style = "pretty",
+          palette = "RdBu",
+          title = "Local Moran Statistics") +
+  tm_borders(alpha = 0.5)
+```
+
+Then, it is the local Moran Statistics on Adaptive Distance with wpt functional
+
+```{r}
+#| fig-cap: Figure--Local Moran Statistics on Adaptive Distance with wpt functional in Map form
+tm_shape(nigeria_localMI_ada) +
+  tm_fill(col = "Ii", 
+          style = "pretty",
+          palette = "RdBu",
+          title = "Local Moran Statistics") +
+  tm_borders(alpha = 0.5)
+```
+
+Lastly, we have the local Moran Statistics on Adaptive Distance with wpt non-functional
+
+```{r}
+#| fig-cap: Figure--Local Moran Statistics on Adaptive Distance with wpt non-functional in Map form
+tm_shape(nigeria_localMI_ada_nonfun) +
+  tm_fill(col = "Ii", 
+          style = "pretty",
+          palette = "RdBu",
+          title = "Local Moran Statistics") +
+  tm_borders(alpha = 0.5)
+```
+
+## Creating a LISA Cluster Map
+
+The LISA Cluster Map shows the significant locations color coded by type of spatial autocorrelation. The first step before we can generate the LISA cluster map is to plot the Moran scatterplot.
+
+### Plotting Moran scatterplot
+
+The Moran scatterplot is an illustration of the relationship between the values of the chosen attribute at each location and the average value of the same attribute at neighboring locations.
+
+The code chunk below plots the Moran scatterplot of Functional Water Point by using [*moran.plot()*](https://r-spatial.github.io/spdep/reference/moran.plot.html) of **spdep**.
+
+```{r}
+nci <- moran.plot(NIGERIA$`wpt functional`, rs_fix,
+                  labels=as.character(NIGERIA$ADM2_EN), 
+                  xlab="Functional Water Point", 
+                  ylab="Spatially Lag Functional Water Point")
+```
+
+### Preparing LISA map classes
+
+For this section, LISA map categorization and visualization is performed.
+
+We first derives the spatially lagged variable of interest and centers the spatially lagged variable around its mean, then follow by centering the local Moran\'s around the mean, with a statistical significance level for the local Moran is set, and lastly define the low-low (1), low-high (2), high-low (3) and high-high (4) categories with non-significant Moran placed in the category 0.
+
+We start with fixed distance method and functional water point data.
+
+The code chunks below show the steps to prepare a LISA cluster map.
+
+```{r}
+quadrant_fix <- vector(mode="numeric",length=nrow(localMI_fix))
+NIGERIA$lag_wpt_fun <- lag.listw(rs_fix,NIGERIA$`wpt functional`)
+DV <- NIGERIA$lag_wpt_fun - mean(NIGERIA$lag_wpt_fun)
+LM1 <- localMI_fix[,1] - mean(localMI_fix[,1])
+signif <- 0.05
+quadrant_fix[DV < 0 & LM1 > 0] <- 1
+quadrant_fix[DV > 0 & LM1 < 0] <- 2
+quadrant_fix[DV < 0 & LM1 < 0] <- 3
+quadrant_fix[DV > 0 & LM1 > 0] <- 4
+quadrant_fix[localMI_fix[,5] > signif] <- 0
+```
+
+```{r}
+#| fig-cap: Figure--LISA classes with fix distance method in MAP
+nigeria_localMI_fix$quadrant_fix <- quadrant_fix
+colors <- c("#ffffff", "#2c7bb6", "#abd9e9", "#fdae61", "#d7191c")
+clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
+
+tm_shape(nigeria_localMI_fix) +
+  tm_fill(col = "quadrant_fix", 
+          style = "cat", 
+          palette = colors[c(sort(unique(quadrant_fix)))+1], 
+          labels = clusters[c(sort(unique(quadrant_fix)))+1],
+          popup.vars = c("")) +
+  tm_view(set.zoom.limits = c(11,17)) +
+  tm_borders(alpha=0.5)
+```
+
+Secondly, adaptive distance method and functional water point data is plotted.
+
+```{r}
+quadrant_ada <- vector(mode="numeric",length=nrow(localMI_ada))
+NIGERIA$lag_wpt_fun <- lag.listw(rs_ada,NIGERIA$`wpt functional`)
+DV <- NIGERIA$lag_wpt_fun - mean(NIGERIA$lag_wpt_fun)
+LM1 <- localMI_ada[,1] - mean(localMI_ada[,1])
+signif <- 0.05
+quadrant_ada[DV < 0 & LM1 > 0] <- 1
+quadrant_ada[DV > 0 & LM1 < 0] <- 2
+quadrant_ada[DV < 0 & LM1 < 0] <- 3
+quadrant_ada[DV > 0 & LM1 > 0] <- 4
+quadrant_ada[localMI_ada[,5] > signif] <- 0
+```
+
+```{r}
+#| fig-cap: Figure--LISA classes with adaptive distance method in MAP
+nigeria_localMI_ada$quadrant_ada <- quadrant_ada
+colors <- c("#ffffff", "#2c7bb6", "#abd9e9", "#fdae61", "#d7191c")
+clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
+
+tm_shape(nigeria_localMI_ada) +
+  tm_fill(col = "quadrant_ada", 
+          style = "cat", 
+          palette = colors[c(sort(unique(quadrant_ada)))+1], 
+          labels = clusters[c(sort(unique(quadrant_ada)))+1],
+          popup.vars = c("")) +
+  tm_view(set.zoom.limits = c(11,17)) +
+  tm_borders(alpha=0.5)
+```
+
+Lastly, we have adaptive distance method and non-functional water point data.
+
+```{r}
+quadrant_ada_NF <- vector(mode="numeric",length=nrow(localMI_ada_nonfun))
+NIGERIA$lag_wpt_fun <- lag.listw(rs_ada,NIGERIA$`wpt functional`)
+DV <- NIGERIA$lag_wpt_fun - mean(NIGERIA$lag_wpt_fun)
+LM1 <- localMI_ada_nonfun[,1] - mean(localMI_ada_nonfun[,1])
+signif <- 0.05
+quadrant_ada_NF[DV < 0 & LM1 > 0] <- 1
+quadrant_ada_NF[DV > 0 & LM1 < 0] <- 2
+quadrant_ada_NF[DV < 0 & LM1 < 0] <- 3
+quadrant_ada_NF[DV > 0 & LM1 > 0] <- 4
+quadrant_ada_NF[localMI_ada_nonfun[,5] > signif] <- 0
+```
+
+```{r}
+nigeria_localMI_ada_nonfun$quadrant_ada_NF <- quadrant_ada_NF
+colors <- c("#ffffff", "#2c7bb6", "#abd9e9", "#fdae61", "#d7191c")
+clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
+
+tm_shape(nigeria_localMI_ada_nonfun) +
+  tm_fill(col = "quadrant_ada_NF", 
+          style = "cat", 
+          palette = colors[c(sort(unique(quadrant_ada_NF)))+1], 
+          labels = clusters[c(sort(unique(quadrant_ada_NF)))+1],
+          popup.vars = c("")) +
+  tm_view(set.zoom.limits = c(11,17)) +
+  tm_borders(alpha=0.5)
+```
