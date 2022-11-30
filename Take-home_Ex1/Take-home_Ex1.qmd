@@ -197,7 +197,7 @@ k1dists <- unlist(nbdists(k1, coords))
 summary(k1dists)
 ```
 
-The summary report shows that the maximum neighbor distance is 72139 meter, so a maximum threshold is created, in order to make sure all units have a nearest neighbor under the maximum threshold, this maximum variable is then saved for future calculation.
+The summary report shows that the maximum neighbor distance is 72139 meters, so a maximum threshold is created, in order to make sure all units have a nearest neighbor under the maximum threshold, this maximum variable is then saved for future calculation.
 
 ```{r}
 MAX <- max(unlist(nbdists(k1, coords)))
@@ -596,4 +596,76 @@ tm_shape(nigeria_localMI_ada_nonfun) +
           popup.vars = c("")) +
   tm_view(set.zoom.limits = c(11,17)) +
   tm_borders(alpha=0.5)
+```
+
+## Hot Spot and Cold Spot Area Analysis
+
+Beside detecting cluster and outliers, localized spatial statistics can be also used to detect hot spot and/or cold spot areas.
+
+The term \'hot spot\' has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).
+
+### Getis and Ord\'s G-Statistics
+
+An alternative spatial statistics to detect spatial anomalies is the Getis and Ord\'s G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.
+
+The analysis consists of three steps:
+
+-   Deriving spatial weight matrix
+
+-   Computing Gi statistics
+
+-   Mapping Gi statistics
+
+## Computing Gi statistics
+
+### Gi statistics using fixed distance
+
+Fixed Distance with wpt functional
+
+```{r}
+fips2 <- order(NIGERIA$ADM2_EN)
+gi.fixed <- localG(NIGERIA$`wpt functional`, rs_fix)
+head(gi.fixed)
+```
+
+Adaptive Distance with wpt functional
+
+```{r}
+gi.ada <- localG(NIGERIA$`wpt functional`, rs_ada)
+head(gi.ada)
+```
+
+Next, we will join the Gi values to their corresponding hunan sf data frame by using the code chunk below.
+
+```{r}
+nigeria_gi_fix <- cbind(NIGERIA,as.matrix(gi.fixed)) %>%
+  rename(gstat_fixed = as.matrix.gi.fixed.)
+
+nigeria_gi_ada <- cbind(NIGERIA,as.matrix(gi.ada)) %>%
+  rename(gstat_ada = as.matrix.gi.ada.)
+```
+
+### Mapping Gi values
+
+The code chunk below shows the functions used to map the Gi values derived using fixed and adaptive distance weight matrix.
+
+```{r}
+#| fig-cap: Figure--Gi Values with fixed distance
+tm_shape(nigeria_gi_fix) +
+  tm_fill(col = "gstat_fixed", 
+          style = "pretty",
+          palette="-RdBu",
+          title = "local Gi") +
+  tm_borders(alpha = 0.5)
+
+```
+
+```{r}
+#| fig-cap: Figure--Gi Values with adaptive distance
+tm_shape(nigeria_gi_ada) +
+  tm_fill(col = "gstat_ada", 
+          style = "pretty",
+          palette="-RdBu",
+          title = "local Gi") +
+  tm_borders(alpha = 0.5)
 ```

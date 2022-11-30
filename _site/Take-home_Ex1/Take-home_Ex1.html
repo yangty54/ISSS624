@@ -247,6 +247,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#plotting-moran-scatterplot" id="toc-plotting-moran-scatterplot" class="nav-link" data-scroll-target="#plotting-moran-scatterplot">Plotting Moran scatterplot</a></li>
   <li><a href="#preparing-lisa-map-classes" id="toc-preparing-lisa-map-classes" class="nav-link" data-scroll-target="#preparing-lisa-map-classes">Preparing LISA map classes</a></li>
   </ul></li>
+  <li><a href="#hot-spot-and-cold-spot-area-analysis" id="toc-hot-spot-and-cold-spot-area-analysis" class="nav-link" data-scroll-target="#hot-spot-and-cold-spot-area-analysis">Hot Spot and Cold Spot Area Analysis</a>
+  <ul class="collapse">
+  <li><a href="#getis-and-ords-g-statistics" id="toc-getis-and-ords-g-statistics" class="nav-link" data-scroll-target="#getis-and-ords-g-statistics">Getis and Ord's G-Statistics</a></li>
+  </ul></li>
+  <li><a href="#computing-gi-statistics" id="toc-computing-gi-statistics" class="nav-link" data-scroll-target="#computing-gi-statistics">Computing Gi statistics</a>
+  <ul class="collapse">
+  <li><a href="#gi-statistics-using-fixed-distance" id="toc-gi-statistics-using-fixed-distance" class="nav-link" data-scroll-target="#gi-statistics-using-fixed-distance">Gi statistics using fixed distance</a></li>
+  <li><a href="#mapping-gi-values" id="toc-mapping-gi-values" class="nav-link" data-scroll-target="#mapping-gi-values">Mapping Gi values</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -566,7 +575,7 @@ Projected CRS: Minna / Nigeria West Belt
    2669   12834   20304   22084   27783   72139 </code></pre>
 </div>
 </div>
-<p>The summary report shows that the maximum neighbor distance is 72139 meter, so a maximum threshold is created, in order to make sure all units have a nearest neighbor under the maximum threshold, this maximum variable is then saved for future calculation.</p>
+<p>The summary report shows that the maximum neighbor distance is 72139 meters, so a maximum threshold is created, in order to make sure all units have a nearest neighbor under the maximum threshold, this maximum variable is then saved for future calculation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>MAX <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="fu">unlist</span>(<span class="fu">nbdists</span>(k1, coords)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1149,6 +1158,88 @@ alternative hypothesis: greater</code></pre>
 <figure class="figure">
 <p><img src="Take-home_Ex1_files/figure-html/unnamed-chunk-45-1.png" class="img-fluid figure-img" width="672"></p>
 <p></p><figcaption class="figure-caption">Figure–LISA classes with adaptive distance method with non-functional water point data on Map</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="hot-spot-and-cold-spot-area-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="hot-spot-and-cold-spot-area-analysis">Hot Spot and Cold Spot Area Analysis</h2>
+<p>Beside detecting cluster and outliers, localized spatial statistics can be also used to detect hot spot and/or cold spot areas.</p>
+<p>The term 'hot spot' has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).</p>
+<section id="getis-and-ords-g-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="getis-and-ords-g-statistics">Getis and Ord's G-Statistics</h3>
+<p>An alternative spatial statistics to detect spatial anomalies is the Getis and Ord's G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.</p>
+<p>The analysis consists of three steps:</p>
+<ul>
+<li><p>Deriving spatial weight matrix</p></li>
+<li><p>Computing Gi statistics</p></li>
+<li><p>Mapping Gi statistics</p></li>
+</ul>
+</section>
+</section>
+<section id="computing-gi-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="computing-gi-statistics">Computing Gi statistics</h2>
+<section id="gi-statistics-using-fixed-distance" class="level3">
+<h3 class="anchored" data-anchor-id="gi-statistics-using-fixed-distance">Gi statistics using fixed distance</h3>
+<p>Fixed Distance with wpt functional</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>fips2 <span class="ot">&lt;-</span> <span class="fu">order</span>(NIGERIA<span class="sc">$</span>ADM2_EN)</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>gi.fixed <span class="ot">&lt;-</span> <span class="fu">localG</span>(NIGERIA<span class="sc">$</span><span class="st">`</span><span class="at">wpt functional</span><span class="st">`</span>, rs_fix)</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gi.fixed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -4.7966255 -4.7601280 -1.1787856 -0.3266329 -4.7190630  1.5172126</code></pre>
+</div>
+</div>
+<p>Adaptive Distance with wpt functional</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>gi.ada <span class="ot">&lt;-</span> <span class="fu">localG</span>(NIGERIA<span class="sc">$</span><span class="st">`</span><span class="at">wpt functional</span><span class="st">`</span>, rs_ada)</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gi.ada)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -1.44467825 -1.54969972 -2.04703349 -0.06826816 -1.35783973  0.81890612</code></pre>
+</div>
+</div>
+<p>Next, we will join the Gi values to their corresponding hunan sf data frame by using the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>nigeria_gi_fix <span class="ot">&lt;-</span> <span class="fu">cbind</span>(NIGERIA,<span class="fu">as.matrix</span>(gi.fixed)) <span class="sc">%&gt;%</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">gstat_fixed =</span> as.matrix.gi.fixed.)</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>nigeria_gi_ada <span class="ot">&lt;-</span> <span class="fu">cbind</span>(NIGERIA,<span class="fu">as.matrix</span>(gi.ada)) <span class="sc">%&gt;%</span></span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">gstat_ada =</span> as.matrix.gi.ada.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="mapping-gi-values" class="level3">
+<h3 class="anchored" data-anchor-id="mapping-gi-values">Mapping Gi values</h3>
+<p>The code chunk below shows the functions used to map the Gi values derived using fixed and adaptive distance weight matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(nigeria_gi_fix) <span class="sc">+</span></span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"gstat_fixed"</span>, </span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>,</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette=</span><span class="st">"-RdBu"</span>,</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local Gi"</span>) <span class="sc">+</span></span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Take-home_Ex1_files/figure-html/unnamed-chunk-49-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure–Gi Values with fixed distance</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(nigeria_gi_ada) <span class="sc">+</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"gstat_ada"</span>, </span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>,</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette=</span><span class="st">"-RdBu"</span>,</span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local Gi"</span>) <span class="sc">+</span></span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Take-home_Ex1_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure–Gi Values with adaptive distance</figcaption><p></p>
 </figure>
 </div>
 </div>
