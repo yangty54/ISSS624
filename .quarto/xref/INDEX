@@ -1,6 +1,7 @@
 {
   "index.qmd": {
-    "index.html": "e6935bc3"
+    "index.html": "e6935bc3",
+    "index.tex": "6d0fba4b"
   },
   "about.qmd": {
     "about.html": "fa02654a"
@@ -22,5 +23,11 @@
   },
   "Hands-on_Ex1/Hands-on_Ex1-2.qmd": {
     "Hands-on_Ex1-2.html": "9adefbbd"
+  },
+  "Hands-on_Ex3/Hands_on_Ex3.qmd": {
+    "Hands_on_Ex3.html": "3c105c06"
+  },
+  "Hands-on_Ex3/Hands-on_Ex3.qmd": {
+    "Hands-on_Ex3.html": "6a86de18"
   }
 }

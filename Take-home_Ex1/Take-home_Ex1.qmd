@@ -1,5 +1,6 @@
 ---
-title: "Take-home Ex1: Is there Positive Co-occurance Relationship Between Water Point Location on Nigeria?"
+title: "Is there Positive Co-occurance Relationship Between Water Point Location on Nigeria?"
+subtitle: "Take-home Ex1"
 editor: visual
 author: Yang Tianyi
 execute: 
@@ -608,8 +609,7 @@ tm_shape(nigeria_localMI_ada_nonfun) +
   tm_borders(alpha=0.5)
 ```
 
-An **outlier**: significant and negative if location i is associated with relatively low values in surrounding locations.
-A **cluster**: significant and positive if location i is associated with relatively high values of the surrounding locations.
+An **outlier**: significant and negative if location i is associated with relatively low values in surrounding locations. A **cluster**: significant and positive if location i is associated with relatively high values of the surrounding locations.
 
 From the above cluster analysis, we can observe extreme high-high cluster in the northern region, and extreme low-low cluster in the northeast area, with other small outliers scattering across the nation, showing a very uneven distribution of water resource in the poor country.
 

@@ -1,5 +1,7 @@
 ---
-title: "Hands-on Exercise 1: Geo Data Wrangling with R (Chapter 1-2)"
+title: "Geo Data Wrangling with R (Chapter 1-2)"
+subtitle: "Hands-on Exercise 1"
+author: "Yang Tianyi"
 editor: visual
 ---
 

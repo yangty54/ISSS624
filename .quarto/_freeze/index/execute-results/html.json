@@ -1,8 +1,10 @@
 {
-  "hash": "dab520a50735ff965410fafe20d87f93",
+  "hash": "ef54ba7409748d79890700e203a50661",
   "result": {
-    "markdown": "---\ntitle: \"ISSS624\"\n---\n\n\nThis is a Quarto website.\n\nTo learn more about Quarto websites visit <https://quarto.org/docs/websites>.\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 2\n```\n:::\n:::\n",
-    "supporting": [],
+    "markdown": "---\ntitle: \"ISSS624\"\nauthor: \n  - name: \"Yang Tianyi\"\n    affiliations:\n      - Singapore Management University\nformat: \n  html: default\n  pdf: default\neditor: visual\nknitr: \n  opts_chunk: \n    echo: true\n    message: false\n---\n\n\nWelcome to ISSS 624 GAA\n\nIn this webpage, I am going to share with you my learning journey of GAA\n",
+    "supporting": [
+      "index_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],
