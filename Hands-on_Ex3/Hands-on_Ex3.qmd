@@ -2,6 +2,12 @@
 title: "Geographical Segmentation with Spatially Constrained Clustering Techniques"
 subtitle: "Hands-on Exercise 5"
 author: "Yang Tianyi"
+format: html
+execute: 
+  echo: true
+  warning: false
+  message: false
+  fig-retine: 3
 editor: visual
 ---
 
