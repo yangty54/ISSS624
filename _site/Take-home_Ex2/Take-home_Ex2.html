@@ -158,6 +158,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../Hands-on_Ex3/Hands-on_Ex3.html">
  <span class="dropdown-text">Hands-on Exercise 3 (Chapter 5)</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../Hands-on_Ex4/Hands-on_Ex4.html">
+ <span class="dropdown-text">Hands-on Exercise 4 (Chapter 6)</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -223,7 +227,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#apstial-data" id="toc-apstial-data" class="nav-link" data-scroll-target="#apstial-data">Apstial data</a></li>
   <li><a href="#geospatial-data" id="toc-geospatial-data" class="nav-link" data-scroll-target="#geospatial-data">Geospatial data</a></li>
   <li><a href="#r-package-installation" id="toc-r-package-installation" class="nav-link" data-scroll-target="#r-package-installation">R Package Installation</a></li>
-  <li><a href="#importing-geospatial-data-from-filtered-data" id="toc-importing-geospatial-data-from-filtered-data" class="nav-link" data-scroll-target="#importing-geospatial-data-from-filtered-data">Importing Geospatial Data from Filtered Data</a></li>
+  <li><a href="#importing-geospatial-data-from-filtered-.rds-data" id="toc-importing-geospatial-data-from-filtered-.rds-data" class="nav-link" data-scroll-target="#importing-geospatial-data-from-filtered-.rds-data">Importing Geospatial Data from Filtered <em>.rds</em> Data</a></li>
   <li><a href="#reading-the-spatial-distribution-of-water-points" id="toc-reading-the-spatial-distribution-of-water-points" class="nav-link" data-scroll-target="#reading-the-spatial-distribution-of-water-points">Reading the Spatial Distribution of Water Points</a></li>
   </ul></li>
   <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">Data Wrangling</a>
@@ -327,17 +331,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>               heatmaply, corrplot, psych, tidyverse, GGally)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="importing-geospatial-data-from-filtered-data" class="level2">
-<h2 class="anchored" data-anchor-id="importing-geospatial-data-from-filtered-data">Importing Geospatial Data from Filtered Data</h2>
-<p>In the previous in-class Exercise 2 data, two geospatial data sets were being used, they are:</p>
-<ul>
-<li><p>geo_export</p></li>
-<li><p>nga_admbnda_adm2_osgof_20190417</p></li>
-</ul>
-<p>Specific water point geospatial data was first imported and filtered in the In-class exercise 2 section.</p>
-<p>Next, <code>write_rds()</code> of readr package was used to save the extracted sf data table (i.e.&nbsp;wp) into an output file in rds data format. The output file is called <em>nga_wp.rds</em> and it is saved in <em>data</em> sub-folder.</p>
-<p>With <code>filter()</code> of dplyr is used to select functional and non-functional water point data, <code>select()</code> of <strong>dplyr</strong> is used to retain a small size file with only field 3,4,9,10, 18,19,20,21,22,and 23.</p>
-<p>After these complete clearing part, the raw data was deleted away to prevent large file storage issue. The following part of data wrangling imports the filtered data into the environment.</p>
+<section id="importing-geospatial-data-from-filtered-.rds-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-geospatial-data-from-filtered-.rds-data">Importing Geospatial Data from Filtered <em>.rds</em> Data</h2>
+<p>In the previous Data Preparation file, we have prepared and filtered data into <em>.rds</em> format, the following exercise will be based on the filtered data.</p>
 </section>
 <section id="reading-the-spatial-distribution-of-water-points" class="level2">
 <h2 class="anchored" data-anchor-id="reading-the-spatial-distribution-of-water-points">Reading the Spatial Distribution of Water Points</h2>

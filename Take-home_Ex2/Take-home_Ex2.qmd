@@ -79,21 +79,9 @@ pacman::p_load(rgdal, spdep, tmap, sf, ClustGeo,
                heatmaply, corrplot, psych, tidyverse, GGally)
 ```
 
-## Importing Geospatial Data from Filtered Data
+## Importing Geospatial Data from Filtered *.rds* Data
 
-In the previous in-class Exercise 2 data, two geospatial data sets were being used, they are:
-
--   geo_export
-
--   nga_admbnda_adm2_osgof_20190417
-
-Specific water point geospatial data was first imported and filtered in the In-class exercise 2 section.
-
-Next, `write_rds()` of readr package was used to save the extracted sf data table (i.e. wp) into an output file in rds data format. The output file is called *nga_wp.rds* and it is saved in *data* sub-folder.
-
-With `filter()` of dplyr is used to select functional and non-functional water point data, `select()` of **dplyr** is used to retain a small size file with only field 3,4,9,10, 18,19,20,21,22,and 23.
-
-After these complete clearing part, the raw data was deleted away to prevent large file storage issue. The following part of data wrangling imports the filtered data into the environment.
+In the previous Data Preparation file, we have prepared and filtered data into *.rds* format, the following exercise will be based on the filtered data.
 
 ## Reading the Spatial Distribution of Water Points
 

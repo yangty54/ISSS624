@@ -12,7 +12,9 @@ website:
           - text: Hands-on Exercise 2 (Chapter 4)
             href: Hands-on_Ex2/Hands-on_Ex2.qmd
           - text: Hands-on Exercise 3 (Chapter 5)
-            href: Hands-on_Ex3/Hands-on_Ex3.qmd  
+            href: Hands-on_Ex3/Hands-on_Ex3.qmd
+          - text: Hands-on Exercise 4 (Chapter 6)
+            href: Hands-on_Ex4/Hands-on_Ex4.qmd
             
       - text: In-class Exercises
         menu: 

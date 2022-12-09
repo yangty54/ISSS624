@@ -2,9 +2,7 @@
   "hash": "ef54ba7409748d79890700e203a50661",
   "result": {
     "markdown": "---\ntitle: \"ISSS624\"\nauthor: \n  - name: \"Yang Tianyi\"\n    affiliations:\n      - Singapore Management University\nformat: \n  html: default\n  pdf: default\neditor: visual\nknitr: \n  opts_chunk: \n    echo: true\n    message: false\n---\n\n\nWelcome to ISSS 624 GAA\n\nIn this webpage, I am going to share with you my learning journey of GAA\n",
-    "supporting": [
-      "index_files"
-    ],
+    "supporting": [],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],
