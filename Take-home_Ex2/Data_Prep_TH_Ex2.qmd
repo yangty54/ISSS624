@@ -148,8 +148,7 @@ The code chunk below is used to recode all the NA values in \#*status_clean* fie
 
 ```{r}
 #| eval: false
-wp_nigeria <- read_rds("rawdata/wp_nigeria.rds") %>%
-  mutate(`#status_clean`= replace_na(`#status_clean`, "Unknown"))
+wp_nigeria <- read_rds("rawdata/wp_nigeria.rds")
 ```
 
 ```{r}
@@ -255,9 +254,23 @@ wpt_rural <- wp_nigeria %>%
            c("FALSE"))
 ```
 
-### Performing Point-in-Polygon Count
+#### **Projection of sf dataframe**
 
 The code chunk below is going to create a new data frame *nigeria_wp* to store the newly-derived variables.
+
+```{r}
+nga_select <- wp_nigeria  %>%
+  rename ("status" = "#status_clean",
+          "lat" = "#lat_deg",
+          "long" = "#lon_deg",
+          "water_tech" = "#water_tech_category") %>%
+  select (status,lat,long,water_tech,usage_capacity,is_urban,water_point_population) %>%
+  mutate(status = replace_na(status, "Unknown")) %>%
+  mutate (water_tech = replace_na(water_tech, "Unknown")) %>%
+  mutate(water_point_population = replace_na(water_point_population,0))
+
+nga_select_sf <- st_as_sf(nga_select, coords = c("long", "lat"),  crs = 4326)
+```
 
 ```{r}
 #| eval: false
@@ -299,9 +312,12 @@ nigeria_wp <- nigeria_wp %>%
 
 ```{r}
 #| eval: false
-write_rds(nigeria_wp, "rawdata/nigeria_wp.rds")
+nigeria_final <- st_join(nga_select_sf,nigeria_wp)
 ```
 
+Finalized *.rds* format written with selected variables
+
 ```{r}
-nigeria_wp <- read_rds("rawdata/nigeria_wp.rds")
+#| eval: false
+write_rds(nigeria_final, "rawdata/nigeria_final.rds")
 ```

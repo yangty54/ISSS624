@@ -89,6 +89,7 @@ First, we are going to import the water point geospatial data (i.e. nga_wp) by 
 
 ```{r}
 nga_wp <- read_rds("data/nigeria_wp.rds")
+  mutate(status_cle = replace_na(status_cle, "Unknown"))
 ```
 
 # Data Wrangling
@@ -127,8 +128,166 @@ The summary of the filtered data is shown below:
 summary(NIGERIA)
 ```
 
+Using the [`unique()`](https://rdrr.io/r/base/unique.html) function, we can identify how many variables are stored within the columns.
+
 ```{r}
-head(NIGERIA)
+unique(NIGERIA)
 ```
 
-## 
+### Recode NA values into string
+
+The code chunk below is used to recode all the NA values in \#*status_clean* field into Unknown.
+
+```{r}
+#| eval: false
+freq(data=NIGERIA, 
+     input = '#status_clean')
+```
+
+### Extracting Water Point Data
+
+We are going to extract water point records by using *#status_clean* column.
+
+The code chunk below is used to extract functional water points.
+
+```{r}
+#| eval: false
+wpt_functional <- wp_nigeria %>%
+  filter(`#status_clean` %in%
+           c("Functional", 
+             "Functional but not in use",
+             "Functional but needs repair"))
+```
+
+The code chunk below is used to extract non-functional water points.
+
+```{r}
+#| eval: false
+wpt_nonfunctional <- wp_nigeria %>%
+  filter(`#status_clean` %in%
+           c("Abandoned/Decommissioned", 
+             "Abandoned",
+             "Non-Functional",
+             "Non functional due to dry season",
+             "Non-Functional due to dry season"))
+```
+
+The code chunk below is used to extract unknown water points.
+
+```{r}
+#| eval: false
+wpt_unknown <- wp_nigeria %>%
+  filter(`#status_clean`  == "Unknown")
+```
+
+### Extracting Water Point Data by main technology
+
+The code chunk below is used to display the distribution of technology adopted by water points.
+
+```{r}
+#| eval: false
+freq(data=wp_nigeria, 
+     input = '#water_tech_category')
+```
+
+We are going to categorize the technology into three types: Hand Pump, Mechanized Pump and Unknown(includes NA values, Tapstand, Rope and Bucket).
+
+The code chunk below is used to extract water points by category.
+
+```{r}
+#| eval: false
+wpt_handpp <- wp_nigeria %>%
+  filter(`#water_tech_category` %in%
+           c("Hand Pump"))
+
+wpt_mechanizedpp <- wp_nigeria %>%
+  filter(`#water_tech_category` %in%
+           c("Mechanized Pump"))
+```
+
+### Extracting Water Point Data by usage capacity
+
+```{r}
+#| eval: false
+freq(data=wp_nigeria, 
+     input = 'usage_capacity')
+```
+
+The code chunk below is used to split *usage\_*capacity into two categories (\<1000 and \>=1000).
+
+```{r}
+#| eval: false
+wpt_usage_cap_below_1k <- wp_nigeria %>%
+  filter(`usage_capacity` %in%
+           c("50","250","300"))
+
+wpt_usage_cap_above_1k <- wp_nigeria %>%
+  filter(`usage_capacity` %in%
+           c("1000"))
+```
+
+### Extracting Rural Water Point Data
+
+```{r}
+#| eval: false
+freq(data=wp_nigeria, 
+     input = 'is_urban')
+```
+
+```{r}
+#| eval: false
+wpt_rural <- wp_nigeria %>%
+  filter(`is_urban` %in%
+           c("FALSE"))
+```
+
+### Performing Point-in-Polygon Count
+
+The code chunk below is going to create a new data frame *nigeria_wp* to store the newly-derived variables.
+
+```{r}
+#| eval: false
+nigeria_wp <- nga %>% 
+  mutate(`total wpt` = lengths(
+    st_intersects(nga, wp_nigeria))) %>%
+  mutate(`wpt functional` = lengths(
+    st_intersects(nga, wpt_functional))) %>%
+  mutate(`wpt non-functional` = lengths(
+    st_intersects(nga, wpt_nonfunctional))) %>%
+  mutate(`wpt unknown` = lengths(
+    st_intersects(nga, wpt_unknown))) %>%
+  mutate(`wpt handpump`=lengths(
+    st_intersects(nga, wpt_handpp))) %>%
+  mutate(`wpt mechpump`=lengths(
+    st_intersects(nga, wpt_mechanizedpp))) %>%
+  mutate(`wpt usage_below_1k`=lengths(
+    st_intersects(nga, wpt_usage_cap_below_1k))) %>%
+  mutate(`wpt usage_above_1k`=lengths(
+    st_intersects(nga, wpt_usage_cap_above_1k))) %>%
+  mutate(`wpt rural`=lengths(
+    st_intersects(nga, wpt_rural)))
+```
+
+The code chunk below is used to generate related percentage.
+
+```{r}
+#| eval: false
+nigeria_wp <- nigeria_wp %>%
+  mutate(`pct_functional` = `wpt functional`/`total wpt`) %>%
+  mutate(`pct_non-functional` = `wpt non-functional`/`total wpt`) %>%
+  mutate(`pct_handpump` = `wpt handpump`/`total wpt`) %>%
+  mutate(`pct_mechpump` = `wpt mechpump`/`total wpt`) %>%
+  mutate(`pct_usage_below_1k` = `wpt usage_below_1k`/`total wpt`) %>%
+  mutate(`pct_usage_above_1k` = `wpt usage_above_1k`/`total wpt`) %>%
+  mutate(`pct_rural` = `wpt rural`/`total wpt`) %>%
+  select(3:4, 9:10, 18:33)
+```
+
+```{r}
+#| eval: false
+write_rds(nigeria_wp, "rawdata/nigeria_wp.rds")
+```
+
+```{r}
+nigeria_wp <- read_rds("rawdata/nigeria_wp.rds")
+```
