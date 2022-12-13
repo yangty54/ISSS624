@@ -1,5 +1,5 @@
 ---
-title: "In-class_Ex3：Updated cluster of Hands-on Ex3"
+title: "In-class Ex3: Updated cluster in Hands-on Ex3"
 author: "Yang Tianyi"
 format: html
 execute: 
