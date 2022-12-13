@@ -259,6 +259,7 @@ wpt_rural <- wp_nigeria %>%
 The code chunk below is going to create a new data frame *nigeria_wp* to store the newly-derived variables.
 
 ```{r}
+#| eval: false
 nga_select <- wp_nigeria  %>%
   rename ("status" = "#status_clean",
           "lat" = "#lat_deg",

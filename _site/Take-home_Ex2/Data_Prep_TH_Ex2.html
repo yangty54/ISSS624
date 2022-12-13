@@ -158,6 +158,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../Hands-on_Ex3/Hands-on_Ex3.html">
  <span class="dropdown-text">Hands-on Exercise 3 (Chapter 5)</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../Hands-on_Ex4/Hands-on_Ex4.html">
+ <span class="dropdown-text">Hands-on Exercise 4 (Chapter 6)</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -170,6 +174,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li>
     <a class="dropdown-item" href="../In-class_Ex2/In-class_Ex2.html">
  <span class="dropdown-text">In-class Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../In-class_Ex4/In-class_Ex4.html">
+ <span class="dropdown-text">In-class Exercise 4</span></a>
   </li>  
     </ul>
   </li>
@@ -229,7 +237,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#extracting-water-point-data-by-main-technology" id="toc-extracting-water-point-data-by-main-technology" class="nav-link" data-scroll-target="#extracting-water-point-data-by-main-technology">Extracting Water Point Data by main technology</a></li>
   <li><a href="#extracting-water-point-data-by-usage-capacity" id="toc-extracting-water-point-data-by-usage-capacity" class="nav-link" data-scroll-target="#extracting-water-point-data-by-usage-capacity">Extracting Water Point Data by usage capacity</a></li>
   <li><a href="#extracting-rural-water-point-data" id="toc-extracting-rural-water-point-data" class="nav-link" data-scroll-target="#extracting-rural-water-point-data">Extracting Rural Water Point Data</a></li>
-  <li><a href="#performing-point-in-polygon-count" id="toc-performing-point-in-polygon-count" class="nav-link" data-scroll-target="#performing-point-in-polygon-count">Performing Point-in-Polygon Count</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -423,8 +430,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="recode-na-values-into-string">Recode NA values into string</h3>
 <p>The code chunk below is used to recode all the NA values in #<em>status_clean</em> field into Unknown.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>wp_nigeria <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"rawdata/wp_nigeria.rds"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">#status_clean</span><span class="st">`</span><span class="ot">=</span> <span class="fu">replace_na</span>(<span class="st">`</span><span class="at">#status_clean</span><span class="st">`</span>, <span class="st">"Unknown"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>wp_nigeria <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"rawdata/wp_nigeria.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">freq</span>(<span class="at">data=</span>wp_nigeria, </span>
@@ -505,51 +511,65 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">is_urban</span><span class="st">`</span> <span class="sc">%in%</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">c</span>(<span class="st">"FALSE"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="performing-point-in-polygon-count" class="level3">
-<h3 class="anchored" data-anchor-id="performing-point-in-polygon-count">Performing Point-in-Polygon Count</h3>
+<section id="projection-of-sf-dataframe" class="level4">
+<h4 class="anchored" data-anchor-id="projection-of-sf-dataframe"><strong>Projection of sf dataframe</strong></h4>
 <p>The code chunk below is going to create a new data frame <em>nigeria_wp</em> to store the newly-derived variables.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>nigeria_wp <span class="ot">&lt;-</span> nga <span class="sc">%&gt;%</span> </span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">total wpt</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">lengths</span>(</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wp_nigeria))) <span class="sc">%&gt;%</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt functional</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">lengths</span>(</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_functional))) <span class="sc">%&gt;%</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt non-functional</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">lengths</span>(</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_nonfunctional))) <span class="sc">%&gt;%</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt unknown</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">lengths</span>(</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_unknown))) <span class="sc">%&gt;%</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt handpump</span><span class="st">`</span><span class="ot">=</span><span class="fu">lengths</span>(</span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_handpp))) <span class="sc">%&gt;%</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt mechpump</span><span class="st">`</span><span class="ot">=</span><span class="fu">lengths</span>(</span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_mechanizedpp))) <span class="sc">%&gt;%</span></span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt usage_below_1k</span><span class="st">`</span><span class="ot">=</span><span class="fu">lengths</span>(</span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_usage_cap_below_1k))) <span class="sc">%&gt;%</span></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt usage_above_1k</span><span class="st">`</span><span class="ot">=</span><span class="fu">lengths</span>(</span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_usage_cap_above_1k))) <span class="sc">%&gt;%</span></span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt rural</span><span class="st">`</span><span class="ot">=</span><span class="fu">lengths</span>(</span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_rural)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>nga_select <span class="ot">&lt;-</span> wp_nigeria  <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span> (<span class="st">"status"</span> <span class="ot">=</span> <span class="st">"#status_clean"</span>,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>          <span class="st">"lat"</span> <span class="ot">=</span> <span class="st">"#lat_deg"</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>          <span class="st">"long"</span> <span class="ot">=</span> <span class="st">"#lon_deg"</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>          <span class="st">"water_tech"</span> <span class="ot">=</span> <span class="st">"#water_tech_category"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span> (status,lat,long,water_tech,usage_capacity,is_urban,water_point_population) <span class="sc">%&gt;%</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">status =</span> <span class="fu">replace_na</span>(status, <span class="st">"Unknown"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span> (<span class="at">water_tech =</span> <span class="fu">replace_na</span>(water_tech, <span class="st">"Unknown"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">water_point_population =</span> <span class="fu">replace_na</span>(water_point_population,<span class="dv">0</span>))</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>nga_select_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(nga_select, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"long"</span>, <span class="st">"lat"</span>),  <span class="at">crs =</span> <span class="dv">4326</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nigeria_wp <span class="ot">&lt;-</span> nga <span class="sc">%&gt;%</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">total wpt</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">lengths</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wp_nigeria))) <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt functional</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">lengths</span>(</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_functional))) <span class="sc">%&gt;%</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt non-functional</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">lengths</span>(</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_nonfunctional))) <span class="sc">%&gt;%</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt unknown</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">lengths</span>(</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_unknown))) <span class="sc">%&gt;%</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt handpump</span><span class="st">`</span><span class="ot">=</span><span class="fu">lengths</span>(</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_handpp))) <span class="sc">%&gt;%</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt mechpump</span><span class="st">`</span><span class="ot">=</span><span class="fu">lengths</span>(</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_mechanizedpp))) <span class="sc">%&gt;%</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt usage_below_1k</span><span class="st">`</span><span class="ot">=</span><span class="fu">lengths</span>(</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_usage_cap_below_1k))) <span class="sc">%&gt;%</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt usage_above_1k</span><span class="st">`</span><span class="ot">=</span><span class="fu">lengths</span>(</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_usage_cap_above_1k))) <span class="sc">%&gt;%</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">wpt rural</span><span class="st">`</span><span class="ot">=</span><span class="fu">lengths</span>(</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">st_intersects</span>(nga, wpt_rural)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The code chunk below is used to generate related percentage.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nigeria_wp <span class="ot">&lt;-</span> nigeria_wp <span class="sc">%&gt;%</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_functional</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt functional</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_non-functional</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt non-functional</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_handpump</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt handpump</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_mechpump</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt mechpump</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_usage_below_1k</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt usage_below_1k</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_usage_above_1k</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt usage_above_1k</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_rural</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt rural</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">9</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">18</span><span class="sc">:</span><span class="dv">33</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>nigeria_wp <span class="ot">&lt;-</span> nigeria_wp <span class="sc">%&gt;%</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_functional</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt functional</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_non-functional</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt non-functional</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_handpump</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt handpump</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_mechpump</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt mechpump</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_usage_below_1k</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt usage_below_1k</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_usage_above_1k</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt usage_above_1k</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">pct_rural</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">wpt rural</span><span class="st">`</span><span class="sc">/</span><span class="st">`</span><span class="at">total wpt</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">9</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">18</span><span class="sc">:</span><span class="dv">33</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(nigeria_wp, <span class="st">"rawdata/nigeria_wp.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nigeria_final <span class="ot">&lt;-</span> <span class="fu">st_join</span>(nga_select_sf,nigeria_wp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Finalized <em>.rds</em> format written with selected variables</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nigeria_wp <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"rawdata/nigeria_wp.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(nigeria_final, <span class="st">"rawdata/nigeria_final.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
+</section>
 </section>
 </section>
 </section>

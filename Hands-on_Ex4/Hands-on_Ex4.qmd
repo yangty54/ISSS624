@@ -1,6 +1,6 @@
 ---
 title: "Calibrating Hedonic Pricing Model for Private Highrise Property with GWR Method"
-subtitle: "Hands-on_Ex4"
+subtitle: "Hands-on_Ex4 (Chapter 6)"
 editor: visual
 author: Yang Tianyi
 execute: 
