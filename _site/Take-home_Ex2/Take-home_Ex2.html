@@ -893,7 +893,7 @@ Abua/Odual          0.6410256          0.3333333    0.6666667 0.53846154</code><
 0.9359093 0.8736009 0.9565071 0.9919311 </code></pre>
 </div>
 </div>
-<p>With reference to the output above, we can see that Ward's method provides the strongest clustering structure among the four methods assessed. Hence, in the subsequent analysis, only Ward's method will be used.</p>
+<p>With reference to the output above, we can see that Ward’s method provides the strongest clustering structure among the four methods assessed. Hence, in the subsequent analysis, only Ward’s method will be used.</p>
 </section>
 <section id="determining-optimal-clusters" class="level3">
 <h3 class="anchored" data-anchor-id="determining-optimal-clusters">Determining Optimal Clusters</h3>
@@ -950,7 +950,7 @@ B=50 simulated reference sets, k = 1..10; spaceH0="scaledPCA"
 <h3 class="anchored" data-anchor-id="interpreting-the-dendrograms">Interpreting the dendrograms</h3>
 <p>In the dendrogram displayed above, each leaf corresponds to one observation. As we move up the tree, observations that are similar to each other are combined into branches, which are themselves fused at a higher height.</p>
 <p>The height of the fusion, provided on the vertical axis, indicates the (dis)similarity between two observations. The higher the height of the fusion, the less similar the observations are. Note that, conclusions about the proximity of two observations can be drawn only based on the height where branches containing those two observations first are fused. We cannot use the proximity of two observations along the horizontal axis as a criteria of their similarity.</p>
-<p>It's also possible to draw the dendrogram with a border around the selected clusters by using <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/rect.hclust.html"><em>rect.hclust()</em></a> of R stats. The argument <em>border</em> is used to specify the border colors for the rectangles.</p>
+<p>It’s also possible to draw the dendrogram with a border around the selected clusters by using <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/rect.hclust.html"><em>rect.hclust()</em></a> of R stats. The argument <em>border</em> is used to specify the border colors for the rectangles.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hclust_ward, <span class="at">cex =</span> <span class="fl">0.2</span>)</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rect.hclust</span>(hclust_ward, </span>
