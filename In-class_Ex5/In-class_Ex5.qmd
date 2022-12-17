@@ -249,16 +249,3 @@ tm_shape(gwr_sf.fixed) +
   tm_view(set.zoom.limits = c(8,14))
 prob_T
 ```
-
-```{r}
-#| eval = false
-tertiary_TV <- tm_shape(Osun) + 
-  tm_polygons(alpha = 0.1) +
-tm_shape(gwr_sf.fixed) +
-  tm_dots(col = "distance_to_tertiary_road_TX", 
-          border.col = "gray60", 
-          border.lwd = 1) +
-  tm_view(set.zoom.limits = (8,14))
-  
-tmap_arrange(tertiary_SE, tertiary_TV, asp = 1, ncol = 2, sync = TRUE)
-```
