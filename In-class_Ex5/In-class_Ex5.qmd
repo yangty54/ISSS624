@@ -1,0 +1,40 @@
+---
+title: "Modeling the Spatial Variation of the Explanatory Factors of Water Point Status using Geographically Weighted Logistic Regression"
+subtitle: "In-class_Ex5"
+editor: visual
+author: Yang Tianyi
+execute: 
+  warning: false
+  message: false
+format: html
+---
+
+# Setting the Scene
+
+To build an explanatory model to discover factor affecting water point status in Osun State, Nigeria
+
+# Model Variables
+
+-   Dependent variable: Water point status (i.e.functional/non-functional)
+
+-   Independent variables:
+
+    -   distance_to_primary_road
+
+    -   distance_to_secondary_road
+
+    -   distance_to_tertiary_road
+
+    -   distance_to_city
+
+    -   distance_to_town,
+
+    -   water_point_population
+
+    -   local_population_1km
+
+    -   usage_capacity
+
+    -   is_urban
+
+    -   water_source_clean
